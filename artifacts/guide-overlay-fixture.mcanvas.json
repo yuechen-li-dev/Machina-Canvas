@@ -16,10 +16,7 @@
       "id": "guide-overlay-fixture-layer",
       "name": "Reference Image With Guide",
       "visible": true,
-      "objectIds": [
-        "guide-overlay-reference-image",
-        "guide-overlay-fixture"
-      ]
+      "objectIds": ["guide-overlay-reference-image", "guide-overlay-fixture"]
     }
   ],
   "objects": {
@@ -52,10 +49,7 @@
       "height": 400,
       "role": "guideSidecar",
       "targetId": "guide-overlay-reference-image",
-      "tags": [
-        "guide",
-        "sidecar"
-      ],
+      "tags": ["guide", "sidecar"],
       "notes": "1 region, 3 datums, 1 dimension.",
       "guide": {
         "kind": "canvasGuideSidecar",
@@ -108,14 +102,8 @@
           {
             "id": "width-260",
             "kind": "linear",
-            "from": [
-              20,
-              20
-            ],
-            "to": [
-              280,
-              20
-            ],
+            "from": [20, 20],
+            "to": [280, 20],
             "label": "260 px",
             "units": "px",
             "region": "overall-bounds"

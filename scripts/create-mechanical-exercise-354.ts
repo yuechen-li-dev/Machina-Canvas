@@ -16,7 +16,7 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "apps", "machina-canvas", "artifacts");
+const artifactsDir = join(repoRoot, "app", "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 const uploadedReferencePaths = [
@@ -582,14 +582,14 @@ export function createMechanicalExercise354DogfoodReport(): string {
 
 ## Source
 
-The source is the uploaded 2D mechanical exercise reference image, preserved as \`apps/machina-canvas/artifacts/reference-mechanical-exercise-354.png\` when available. The drawing was manually approximated; no computer vision, raster tracing, or automatic image-to-CAD conversion was used.
+The source is the uploaded 2D mechanical exercise reference image, preserved as \`app/artifacts/reference-mechanical-exercise-354.png\` when available. The drawing was manually approximated; no computer vision, raster tracing, or automatic image-to-CAD conversion was used.
 
 ## Generated artifacts
 
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.mcanvas.json\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.render.svg\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.preview.png\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.dogfood-report.md\`
+- \`app/artifacts/mechanical-exercise-354.mcanvas.json\`
+- \`app/artifacts/mechanical-exercise-354.render.svg\`
+- \`app/artifacts/mechanical-exercise-354.preview.png\`
+- \`app/artifacts/mechanical-exercise-354.dogfood-report.md\`
 
 ## What worked
 
@@ -664,12 +664,12 @@ ArcSweep values describe visual clockwise/counterclockwise motion in that y-down
 
 ## Visual evidence
 
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.render.svg\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354.preview.png\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354-blockout.render.svg\`
-- \`apps/machina-canvas/artifacts/mechanical-exercise-354-blockout.preview.png\`
-- \`apps/machina-canvas/artifacts/arc-orientation-fixture.svg\`
-- \`apps/machina-canvas/artifacts/arc-orientation-fixture.png\`
+- \`app/artifacts/mechanical-exercise-354.render.svg\`
+- \`app/artifacts/mechanical-exercise-354.preview.png\`
+- \`app/artifacts/mechanical-exercise-354-blockout.render.svg\`
+- \`app/artifacts/mechanical-exercise-354-blockout.preview.png\`
+- \`app/artifacts/arc-orientation-fixture.svg\`
+- \`app/artifacts/arc-orientation-fixture.png\`
 
 ## Remaining caveats
 
@@ -853,7 +853,7 @@ export function writeMechanicalExercise354Artifacts(): readonly string[] {
 
 if (
   (process.argv[1] && resolve(process.argv[1]) === __filename) ||
-  process.env.npm_lifecycle_event === "canvas:mechanical-exercise-354"
+  process.env.npm_lifecycle_event?.endsWith("mechanical-exercise-354")
 ) {
   const outputs = writeMechanicalExercise354Artifacts();
   console.log("Mechanical Exercise 354 dogfood artifacts generated:");

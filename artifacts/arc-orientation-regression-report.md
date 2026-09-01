@@ -30,12 +30,12 @@ ArcSweep values describe visual clockwise/counterclockwise motion in that y-down
 
 ## Visual evidence
 
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.render.svg`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.preview.png`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354-blockout.render.svg`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354-blockout.preview.png`
-- `apps/machina-canvas/artifacts/arc-orientation-fixture.svg`
-- `apps/machina-canvas/artifacts/arc-orientation-fixture.png`
+- `app/artifacts/mechanical-exercise-354.render.svg`
+- `app/artifacts/mechanical-exercise-354.preview.png`
+- `app/artifacts/mechanical-exercise-354-blockout.render.svg`
+- `app/artifacts/mechanical-exercise-354-blockout.preview.png`
+- `app/artifacts/arc-orientation-fixture.svg`
+- `app/artifacts/arc-orientation-fixture.png`
 
 ## Remaining caveats
 

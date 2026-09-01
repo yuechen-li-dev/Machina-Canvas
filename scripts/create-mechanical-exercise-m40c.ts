@@ -18,7 +18,7 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "apps", "machina-canvas", "artifacts");
+const artifactsDir = join(repoRoot, "app", "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
@@ -1456,7 +1456,7 @@ export function writeMechanicalExerciseM40cArtifacts(): readonly string[] {
 
 if (
   (process.argv[1] && resolve(process.argv[1]) === __filename) ||
-  process.env.npm_lifecycle_event === "canvas:mechanical-exercise-m40c"
+  process.env.npm_lifecycle_event?.endsWith("mechanical-exercise-m40c")
 ) {
   const outputs = writeMechanicalExerciseM40cArtifacts();
   console.log("M40c mechanical dogfood artifacts generated:");

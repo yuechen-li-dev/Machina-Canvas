@@ -9,8 +9,8 @@
 
 ## Outputs
 
-- guide TOML: C:\Users\yuech\source\repos\MachinaLayout.JS\apps\machina-canvas\artifacts\tinytown_sprite_alpha.guide.toml
-- compiled runtime sprite TOML: C:\Users\yuech\source\repos\MachinaLayout.JS\apps\machina-canvas\artifacts\tinytown_sprite_alpha.compiled.sprite.toml
+- guide TOML: C:\Users\yuech\source\repos\MachinaLayout.JS\app\artifacts\tinytown_sprite_alpha.guide.toml
+- compiled runtime sprite TOML: C:\Users\yuech\source\repos\MachinaLayout.JS\app\artifacts\tinytown_sprite_alpha.compiled.sprite.toml
 - guide regions: characters_down, characters_left, characters_right, characters_up, props_top, props_bottom
 - generated stackframes: 12
 - explicit manual/runtime frames: 31

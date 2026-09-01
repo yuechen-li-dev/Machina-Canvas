@@ -227,13 +227,13 @@ The renderer/export stack is still SVG-first.
 Intended boundary:
 
 - MachinaLayout.JS library/toolbox: MIT
-- MachinaCanvas app/product: AGPL-3.0-or-later via `apps/machina-canvas/LICENSE`
+- MachinaCanvas app/product: AGPL-3.0-or-later via `app/LICENSE`
 
 Current package boundary:
 
 - root npm package is allowlist-based via `package.json#files`
 - intended publish contents are `dist/`, root docs, `README.md`, and `LICENSE`
-- `apps/machina-canvas/src` and app artifacts are not intended npm payload
+- `app/src` and app artifacts are not intended npm payload
 
 Dry-run findings from this closeout:
 
@@ -241,7 +241,7 @@ Dry-run findings from this closeout:
 - dry-run entry count: 148 files
 - unpacked size: 1,162,589 bytes
 - contents were limited to root MIT package material (`dist/**`, root `docs/**`, `README.md`, `LICENSE`, `package.json`)
-- confirmed absent from pack output: `apps/machina-canvas/src/**`, `apps/machina-canvas/artifacts/**`, `apps/machina-canvas/fixtures/**`, `test/**`, and other app-only AGPL source paths
+- confirmed absent from pack output: `app/src/**`, `app/artifacts/**`, `app/fixtures/**`, `test/**`, and other app-only AGPL source paths
 
 ## Verification
 
@@ -253,7 +253,7 @@ npm run format:check
 npm run lint
 npm test
 npm run build
-cd apps/machina-canvas && npm run build
+cd app && npm run build
 npm pack --dry-run
 npm pack --dry-run --json
 npm run canvas:mechanical-exercise-354
@@ -268,7 +268,7 @@ Result summary from this closeout:
 - `npm run lint`: passed
 - `npm test`: passed (`152` test files, `1604` tests)
 - `npm run build`: passed
-- `cd apps/machina-canvas && npm run build`: passed with the existing Vite large-chunk warning
+- `cd app && npm run build`: passed with the existing Vite large-chunk warning
 - `npm pack --dry-run`: passed
 - `npm pack --dry-run --json`: passed
 - `npm run canvas:mechanical-exercise-354`: passed
@@ -301,10 +301,10 @@ Notes:
 
 What not to touch casually:
 
-- `apps/machina-canvas/src/sceneModel.ts`
-- `apps/machina-canvas/src/sceneDocument.ts`
-- `apps/machina-canvas/src/canvasExport.ts`
-- `apps/machina-canvas/src/App.tsx`
+- `app/src/sceneModel.ts`
+- `app/src/sceneDocument.ts`
+- `app/src/canvasExport.ts`
+- `app/src/App.tsx`
 - sidecar parsers/serializers and export bundle layout
 - artifact filenames used by tests and dogfood scripts
 
@@ -316,19 +316,19 @@ Current successful verification commands:
 
 Where docs live:
 
-- app overview: `apps/machina-canvas/README.md`
-- phase closeout: `apps/machina-canvas/docs/phase-closeout-m40.md`
+- app overview: `app/README.md`
+- phase closeout: `app/docs/phase-closeout-m40.md`
 - export format: `docs/machina-canvas-export-format.md`
 - related canvas/tool docs: `docs/machina-canvas-*.md`
 
 Where artifacts live:
 
-- checked-in dogfood and review artifacts: `apps/machina-canvas/artifacts/`
-- editable/export fixtures: `apps/machina-canvas/fixtures/`
+- checked-in dogfood and review artifacts: `app/artifacts/`
+- editable/export fixtures: `app/fixtures/`
 
 What is AGPL/product vs MIT/library:
 
-- `apps/machina-canvas/**` is app/product territory unless something is clearly a shared library primitive
+- `app/**` is app/product territory unless something is clearly a shared library primitive
 - published npm package at repo root is the MIT MachinaLayout.JS toolbox
 - do not let AGPL app source drift into root package publish contents
 

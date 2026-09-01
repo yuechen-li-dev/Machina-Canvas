@@ -2,14 +2,14 @@
 
 ## Source
 
-The source is the uploaded 2D mechanical exercise reference image, preserved as `apps/machina-canvas/artifacts/reference-mechanical-exercise-354.png` when available. The drawing was manually approximated; no computer vision, raster tracing, or automatic image-to-CAD conversion was used.
+The source is the uploaded 2D mechanical exercise reference image, preserved as `app/artifacts/reference-mechanical-exercise-354.png` when available. The drawing was manually approximated; no computer vision, raster tracing, or automatic image-to-CAD conversion was used.
 
 ## Generated artifacts
 
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.mcanvas.json`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.render.svg`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.preview.png`
-- `apps/machina-canvas/artifacts/mechanical-exercise-354.dogfood-report.md`
+- `app/artifacts/mechanical-exercise-354.mcanvas.json`
+- `app/artifacts/mechanical-exercise-354.render.svg`
+- `app/artifacts/mechanical-exercise-354.preview.png`
+- `app/artifacts/mechanical-exercise-354.dogfood-report.md`
 
 ## What worked
 

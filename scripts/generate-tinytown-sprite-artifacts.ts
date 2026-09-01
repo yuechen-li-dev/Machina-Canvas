@@ -43,7 +43,7 @@ type OverlayPayload = {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "apps", "machina-canvas", "artifacts");
+const artifactsDir = join(repoRoot, "app", "artifacts");
 const dominatusSpritesDir =
   "C:\\Users\\yuech\\source\\repos\\Dominatus\\samples\\Dominatus.GodotTinyTown\\assets\\sprites";
 const sourceImagePath = join(dominatusSpritesDir, "tinytown_sprite_alpha.png");
@@ -52,14 +52,7 @@ const sourceSpriteforgeTomlPath = join(
   dominatusSpritesDir,
   "tinytown_sprite_alpha.spriteforge.toml",
 );
-const fixtureImagePath = join(
-  repoRoot,
-  "apps",
-  "machina-canvas",
-  "public",
-  "assets",
-  "tinytown_sprite_alpha.png",
-);
+const fixtureImagePath = join(repoRoot, "app", "public", "assets", "tinytown_sprite_alpha.png");
 export const TINYTOWN_WORKFLOW_ARTIFACT_PATHS = {
   guideToml: join(artifactsDir, "tinytown_sprite_alpha.guide.toml"),
   runtimeToml: join(artifactsDir, "tinytown_sprite_alpha.compiled.sprite.toml"),

@@ -1,5 +1,46 @@
 # MachinaCanvas
 
+MachinaCanvas is the AGPL product/editor built on the MIT MachinaLayout.JS toolbox. This `/app` folder is now the app package boundary: source, tests, scripts, docs, fixtures, public assets, and intentionally retained dogfood artifacts live here so the folder can be moved manually into its own repository later.
+
+## Package boundary
+
+- License: AGPL-3.0-or-later via `LICENSE`.
+- Package metadata: `package.json` is private and app-local.
+- Library dependency: MachinaCanvas consumes MachinaLayout.JS through the local `machinalayout` package dependency during monorepo development.
+- Boundary rule: the app may depend on public MachinaLayout.JS exports; the root MIT library must not depend on MachinaCanvas.
+
+## Commands
+
+```bash
+npm run dev
+npm run build
+npm test
+npm run format
+npm run format:check
+npm run lint
+npm run artifacts:mechanical-354
+npm run artifacts:mechanical-354-blockout
+npm run artifacts:guide-overlay
+```
+
+## Directory map
+
+- `src/` — app/editor source.
+- `test/` — app-local tests.
+- `scripts/` — dogfood artifact/workflow generators.
+- `docs/` — app docs, including [repository graduation](docs/repository-graduation.md).
+- `fixtures/` — app fixtures.
+- `artifacts/` — intentional dogfood/review artifacts.
+- `public/` — Vite public assets.
+
+## Repository graduation
+
+Do not create a repository automatically from this milestone. When ready, follow [MachinaCanvas Repository Graduation](docs/repository-graduation.md): copy `/app`, replace the local `machinalayout` dependency, install, run tests/build, verify artifacts, add CI, and preserve the AGPL license.
+
+---
+
+# MachinaCanvas
+
 MachinaCanvas is the first dogfood app for MachinaLayout.JS: a React/Vite app/product workspace for an LLM-friendly 2D graphics editor substrate.
 
 MachinaLayout.JS remains the MIT-licensed library/toolbox package. MachinaCanvas is separate app/product code licensed under AGPL v3, and the root npm package is expected to exclude MachinaCanvas app source. See [M40 phase closeout](docs/phase-closeout-m40.md).
@@ -57,7 +98,7 @@ MachinaCanvas workflows are TypeScript automation over scene records, sidecars, 
 
 Workflows can run headlessly from Node or script contexts where practical, which makes them a better fit for Codex and other LLM automation than brittle click replay. The browser editor and script-side workflows should share the same scene, sidecar, compile, audit, and export APIs so automation targets records and artifacts instead of visual state.
 
-The TinyTown sprite workflow under `apps/machina-canvas/scripts/tinytown-sprite-workflow.ts` is the reference example in this repo. It loads authoring inputs, compiles runtime sprite TOML, produces audit artifacts, and writes a workflow manifest without executing arbitrary code inside the browser editor.
+The TinyTown sprite workflow under `app/scripts/tinytown-sprite-workflow.ts` is the reference example in this repo. It loads authoring inputs, compiles runtime sprite TOML, produces audit artifacts, and writes a workflow manifest without executing arbitrary code inside the browser editor.
 
 ## Why Webpage-Shaped
 
@@ -345,7 +386,7 @@ Blockout is layout IR. It helps authors and LLMs solve composition before final 
 
 Attach guide and blockout sidecars to an image or scene object, toggle their visibility like layers, and use them as visible red/orange and green overlays during editing and visual review. Guide coordinates are owner-relative: for image attachments, guide coordinates are interpreted in the target image's intrinsic pixel coordinate system, then scaled and translated into the image rectangle. Guide opacity is part of the sidecar scene object and is reflected in the live overlay and exported visual review SVG. These are authoring-side overlays, not automatic image-to-CAD extraction, not a solver, and not mCAD-specific.
 
-Run `npm run canvas:guide-overlay-fixture` to generate the M40d review fixture at `apps/machina-canvas/artifacts/guide-overlay-fixture.*`. The fixture includes a reference PNG, attached `.guide.toml`, `.mcanvas.json`, rendered SVG, preview PNG, review HTML, and a report that records attachment ids, feature counts, export inclusion, and screenshot evidence target.
+Run `npm run canvas:guide-overlay-fixture` to generate the M40d review fixture at `app/artifacts/guide-overlay-fixture.*`. The fixture includes a reference PNG, attached `.guide.toml`, `.mcanvas.json`, rendered SVG, preview PNG, review HTML, and a report that records attachment ids, feature counts, export inclusion, and screenshot evidence target.
 
 Guide sidecars (`*.guide.toml`) are authoring IR. They describe regions, datums, dimensions, and alignment marks used to edit visual artifacts. They are separate from runtime sidecars such as `*.sprite.toml`.
 
@@ -556,7 +597,7 @@ separate files:
 - object, layer, handoff, and command recipe files are TOML contracts
 
 A checked-in demo fixture lives at
-[`apps/machina-canvas/fixtures/demo-poster.mcanvas`](fixtures/demo-poster.mcanvas).
+[`app/fixtures/demo-poster.mcanvas`](fixtures/demo-poster.mcanvas).
 It is a readable hand-authored bundle for the current demo poster shape. The
 runtime app still uses its in-memory scene model.
 

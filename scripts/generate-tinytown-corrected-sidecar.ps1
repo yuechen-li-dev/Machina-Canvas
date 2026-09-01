@@ -13,7 +13,7 @@ $sourceDir = "C:\Users\yuech\source\repos\Dominatus\samples\Dominatus.GodotTinyT
 $sourceImagePath = Join-Path $sourceDir "tinytown_sprite_alpha.png"
 $sourceTomlPath = Join-Path $sourceDir "tinytown_sprite_alpha.spriteforge.toml"
 
-$artifactDir = Join-Path $repoRoot "apps\machina-canvas\artifacts"
+$artifactDir = Join-Path $repoRoot "app\artifacts"
 $outputTomlPath = Join-Path $artifactDir "tinytown_sprite_alpha.corrected.spriteforge.toml"
 $outputAuditPath = Join-Path $artifactDir "tinytown_sprite_alpha.audit.md"
 $outputOverlayPath = Join-Path $artifactDir "tinytown_sprite_alpha.corrected-overlay.png"

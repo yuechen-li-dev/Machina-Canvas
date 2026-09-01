@@ -1265,7 +1265,7 @@ export function serializeCanvasHandoffToml(
     "schema_version = 1",
     `name = ${quoteTomlString(options?.rootName ?? document.name)}`,
     'created_by = "MachinaCanvas"',
-    'source_app = "apps/machina-canvas"',
+    'source_app = "app"',
     "",
     'render_svg = "render.svg"',
     'document_json = "document.json"',

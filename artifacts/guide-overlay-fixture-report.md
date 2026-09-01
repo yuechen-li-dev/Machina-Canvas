@@ -21,7 +21,7 @@
 
 ## Review artifacts
 
-- Render SVG: `apps/machina-canvas/artifacts/guide-overlay-fixture.render.svg`
-- Preview PNG: `apps/machina-canvas/artifacts/guide-overlay-fixture.preview.png`
-- Browser review page: `apps/machina-canvas/artifacts/guide-overlay-review.html`
-- Screenshot evidence target: `apps/machina-canvas/artifacts/guide-overlay-live-review.png`
+- Render SVG: `app/artifacts/guide-overlay-fixture.render.svg`
+- Preview PNG: `app/artifacts/guide-overlay-fixture.preview.png`
+- Browser review page: `app/artifacts/guide-overlay-review.html`
+- Screenshot evidence target: `app/artifacts/guide-overlay-live-review.png`

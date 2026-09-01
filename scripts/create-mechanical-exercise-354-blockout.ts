@@ -17,7 +17,7 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "apps", "machina-canvas", "artifacts");
+const artifactsDir = join(repoRoot, "app", "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
@@ -1144,7 +1144,7 @@ export function writeMechanicalExercise354BlockoutArtifacts(): readonly string[]
 
 if (
   (process.argv[1] && resolve(process.argv[1]) === __filename) ||
-  process.env.npm_lifecycle_event === "canvas:mechanical-exercise-354-blockout"
+  process.env.npm_lifecycle_event?.endsWith("mechanical-exercise-354-blockout")
 ) {
   const outputs = writeMechanicalExercise354BlockoutArtifacts();
   console.log("Mechanical Exercise 354 blockout artifacts generated:");

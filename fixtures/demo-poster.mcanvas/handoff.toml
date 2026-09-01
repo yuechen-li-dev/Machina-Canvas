@@ -1,7 +1,7 @@
 schema_version = 1
 name = "Demo Poster"
 created_by = "MachinaCanvas"
-source_app = "apps/machina-canvas"
+source_app = "app"
 
 render_svg = "render.svg"
 document_json = "document.json"

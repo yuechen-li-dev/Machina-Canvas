@@ -16,7 +16,7 @@ import type { CanvasDocument, ImageObject } from "../src/sceneModel";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "apps", "machina-canvas", "artifacts");
+const artifactsDir = join(repoRoot, "app", "artifacts");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
 export const GUIDE_OVERLAY_FIXTURE_IDS = {
@@ -304,10 +304,10 @@ function createReport(document: CanvasDocument, renderSvg: string): string {
 
 ## Review artifacts
 
-- Render SVG: \`apps/machina-canvas/artifacts/guide-overlay-fixture.render.svg\`
-- Preview PNG: \`apps/machina-canvas/artifacts/guide-overlay-fixture.preview.png\`
-- Browser review page: \`apps/machina-canvas/artifacts/guide-overlay-review.html\`
-- Screenshot evidence target: \`apps/machina-canvas/artifacts/guide-overlay-live-review.png\`
+- Render SVG: \`app/artifacts/guide-overlay-fixture.render.svg\`
+- Preview PNG: \`app/artifacts/guide-overlay-fixture.preview.png\`
+- Browser review page: \`app/artifacts/guide-overlay-review.html\`
+- Screenshot evidence target: \`app/artifacts/guide-overlay-live-review.png\`
 `;
 }
 
