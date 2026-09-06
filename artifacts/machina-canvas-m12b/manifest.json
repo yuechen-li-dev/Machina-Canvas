@@ -1,0 +1,19 @@
+{
+  "milestone": "MACHINA-CANVAS-REACT-INTEGRATION-M12B",
+  "kind": "react-integration-decomposition-and-csharp-return-path-audit",
+  "outcome": "B",
+  "m12aModuleArchitecturePreserved": true,
+  "editorControllerQualified": true,
+  "semanticStateSeparatedFromReactTransientState": true,
+  "capabilityOwnedInspectorsQualified": true,
+  "capabilityOwnedOverlaysQualified": true,
+  "centralReactMonolithRemoved": true,
+  "boundedLegacyShellCoordinatorRemains": true,
+  "headlessActionsPreserved": true,
+  "freshUiExtensionQualified": true,
+  "freshBugFixQualified": true,
+  "csharpReturnPathAudited": true,
+  "machinaLayoutMatchKindUsed": true,
+  "machinaUiPortPerformed": false,
+  "vnFeaturesAdded": false
+}

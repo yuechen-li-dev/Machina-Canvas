@@ -1,0 +1,23 @@
+{
+  "milestone": "MACHINA-CANVAS-REACT-INTEGRATION-M12B",
+  "source": "M12A report and pre-M12B workspace",
+  "files": [
+    {
+      "path": "src/app/CanvasEditorApp.tsx",
+      "lines": 6960,
+      "bytes": 242015,
+      "responsibilities": [
+        "editor state",
+        "mode switching",
+        "commands",
+        "tools",
+        "file loading",
+        "canvas rendering",
+        "pointer interactions",
+        "inspectors",
+        "export and checkout",
+        "terminal composition"
+      ]
+    }
+  ]
+}

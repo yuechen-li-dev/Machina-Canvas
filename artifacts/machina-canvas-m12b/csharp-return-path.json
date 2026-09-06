@@ -1,0 +1,37 @@
+{
+  "scope": ["Machina.UI", "Aurelian.Machina", "Aurelian.Composition"],
+  "readOnly": true,
+  "classificationKey": {
+    "A": "should port to C#",
+    "B": "already exists in C#",
+    "C": "JS/editor-specific",
+    "D": "future Oblivion/editor tooling",
+    "E": "reject or obsolete"
+  },
+  "topics": [
+    { "topic": "CanvasModule capability composition", "js": "static descriptors aggregate commands, tools, modes, exporters and UI metadata", "csharp": "PresenterScreenStack and Aurelian IAurelianLayer provide stable-ID ordered composition only at presentation/layer scope", "gap": "no typed cross-capability application composition contract", "classification": "A", "recommendation": "port the static composition and duplicate-ID law to a small application/tooling contract, not Machina.Core UI nodes" },
+    { "topic": "command definition validation apply change-result", "js": "typed command definitions return validation diagnostics and immutable apply results", "csharp": "Machina.Runtime DispatchTable<TState> has typed immutable transitions; Aurelian host commands have validation and receipts", "gap": "no shared change/result record joining validation and application", "classification": "A", "recommendation": "add a narrow typed result law only when a second C# editor/application consumer appears" },
+    { "topic": "tool registry", "js": "headless CanvasToolDefinition values with stable IDs and cloned results", "csharp": "no Machina.UI equivalent; pipelines and host command handlers are purpose-specific", "gap": "no generic bounded tooling registry", "classification": "D", "recommendation": "place a future registry in Oblivion/tooling, not runtime semantic UI" },
+    { "topic": "inspector presenter contributions", "js": "ordered stable-ID support predicates render module-local inspector sections", "csharp": "PresenterScreenStack composes visible screens by declared layer and insertion order", "gap": "screens do not model selection-sensitive inspector facts", "classification": "D", "recommendation": "reuse stable identity and ordering in future Oblivion inspector presenters; do not port React render functions" },
+    { "topic": "export artifact provider", "js": "module contributors produce deterministic artifacts with duplicate-path rejection", "csharp": "Machina.Fonts and Aurelian shader tooling have typed artifact exporters and manifests", "gap": "no small shared provider aggregation law", "classification": "A", "recommendation": "extract provider/path-collision contracts only if multiple C# tooling products need them" },
+    { "topic": "workflow model", "js": "record-driven headless workflows materialize deterministic artifact sets", "csharp": "Machina pipelines and Aurelian asset pipelines already return immutable results and diagnostics", "gap": "editor workflow/catalog UI is absent", "classification": "D", "recommendation": "keep catalog and progress UI for Oblivion; reuse existing C# pipeline result style" },
+    { "topic": "sidecar attachment model", "js": "semantic object IDs and explicit relations attach alpha, sprite, sketch, guide and blockout sidecars", "csharp": "asset manifests and presentation source IDs exist but no equivalent editor attachment graph", "gap": "no renderer-neutral semantic attachment record", "classification": "D", "recommendation": "future Oblivion may adopt typed attachments; Machina.UI should receive already-resolved presentation facts" },
+    { "topic": "editor session controller separation", "js": "framework-free observable CanvasEditorSession under a React host", "csharp": "MachinaPresentationPipeline is presenter-neutral and sample presenters retain window/input/application state", "gap": "no generic editor session, by design", "classification": "D", "recommendation": "use the same separation in Oblivion without adding editor state to Machina.UI" },
+    { "topic": "headless actions", "js": "commands, tools, validation and export run without React", "csharp": "UiDocument lowering, DispatchTable, MachinaPresentationPipeline and Aurelian translators are headless", "gap": "editor-specific actions are not present", "classification": "B", "recommendation": "preserve current headless C# seams; add product actions in their application owner" },
+    { "topic": "semantic IDs", "js": "stable module, command, tool, object, contribution and artifact IDs", "csharp": "UiActionId, NodeId, PresenterScreenId and LayerId validate semantic identity", "gap": "no single universal ID, which is desirable", "classification": "B", "recommendation": "continue domain-specific strongly typed IDs" },
+    { "topic": "object model aggregation", "js": "CanvasObject is an explicit aggregate discriminated union over module-owned records", "csharp": "UiNode hierarchy and flat UiDocument aggregate semantic UI authoring", "gap": "Canvas editor objects include non-UI drafting and asset concepts", "classification": "C", "recommendation": "do not port CanvasObject; preserve explicit aggregation in any future editor domain" },
+    { "topic": "React transient state separation", "js": "DOM refs, hover, accordion, pointer capture and text buffers stay outside session state", "csharp": "pipeline is immutable while presenters own window and input-loop concerns", "gap": "framework details differ", "classification": "B", "recommendation": "preserve the existing C# presenter/pipeline ownership split" },
+    { "topic": "sprite audit tooling", "js": "sprite-sidecar parsing, frame editing, alpha audit and deterministic reports", "csharp": "no Machina.UI runtime equivalent", "gap": "product-specific editor tooling", "classification": "D", "recommendation": "consider only for future Oblivion asset tooling" },
+    { "topic": "alpha tooling", "js": "browser image decode and alpha-map generation/attachment", "csharp": "Aurelian graphics and asset pipelines consume textures but do not author browser alpha maps", "gap": "authoring operation is absent", "classification": "D", "recommendation": "keep out of Machina.UI; revisit in an asset-tool product" },
+    { "topic": "viewport interaction", "js": "CanvasViewport plus explicit pan, wheel and pointer mapping helpers", "csharp": "MachinaPresentationViewport, Aurelian LayerViewport, UiInputEvent and layer capture/focus routing", "gap": "editor zoom/focus policy is product-specific", "classification": "B", "recommendation": "reuse existing viewport/input contracts; keep editing policy in the application" },
+    { "topic": "mode templates", "js": "static module-contributed document factories and visible tool groups", "csharp": "PresenterScreenStack and Aurelian layers compose screens, not editor document modes", "gap": "no editor template catalog", "classification": "D", "recommendation": "future Oblivion may own editor modes; do not add them to Machina.UI" }
+  ],
+  "rejected": [
+    "React shell port",
+    "browser File APIs",
+    "SVG export assumptions",
+    "mechanical editor specifics",
+    "giant editor state in Machina.UI",
+    "dynamic plugin loading"
+  ]
+}

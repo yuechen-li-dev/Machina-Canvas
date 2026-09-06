@@ -15,7 +15,8 @@ export const stickerExportContribution: CanvasExportContribution = {
           height: object.height,
         },
         src: object.src,
-      }));
+      }))
+      .sort((left, right) => left.id.localeCompare(right.id));
     if (stickers.length === 0) return [];
     return [
       {

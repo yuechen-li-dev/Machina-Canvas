@@ -19,8 +19,8 @@ export const canvasModules = defineCanvasModules([
   stickerModule,
 ]);
 
-export {
-  defineCanvasModules,
-  collectModuleContributions,
-} from "../core/modules/types";
 export type { CanvasModule } from "../core/modules/types";
+export {
+  collectModuleContributions,
+  defineCanvasModules,
+} from "../core/modules/types";

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import type { CanvasCommand } from "../sceneCommands";
-import type { CanvasObject, CanvasObjectKind } from "../sceneModel";
 import { stickerInspectorContribution } from "../modules/stickers/inspector";
+import type { CanvasCommand } from "../sceneCommands";
+import type { CanvasObject } from "../sceneModel";
 
 export type CanvasInspectorContext<TObject extends CanvasObject = CanvasObject> = {
   readonly object: TObject;
@@ -10,16 +10,34 @@ export type CanvasInspectorContext<TObject extends CanvasObject = CanvasObject> 
 
 export type CanvasInspectorContribution = {
   readonly id: string;
-  readonly kind: CanvasObjectKind;
+  readonly order: number;
+  readonly supports: (object: CanvasObject) => boolean;
   readonly render: (context: CanvasInspectorContext) => ReactNode;
 };
 
-const inspectorContributions: readonly CanvasInspectorContribution[] = [
+export function defineCanvasInspectorContributions(
+  contributions: readonly CanvasInspectorContribution[],
+): readonly CanvasInspectorContribution[] {
+  const ids = new Set<string>();
+  return Object.freeze(
+    [...contributions]
+      .map((contribution) => {
+        const id = contribution.id.trim();
+        if (!id) throw new Error("Inspector contribution id must be non-empty.");
+        if (ids.has(id)) throw new Error(`Duplicate inspector contribution id "${id}".`);
+        ids.add(id);
+        return Object.freeze({ ...contribution, id });
+      })
+      .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id)),
+  );
+}
+
+export const inspectorContributions = defineCanvasInspectorContributions([
   stickerInspectorContribution,
-];
+]);
 
 export function renderCanvasModuleInspector(context: CanvasInspectorContext): ReactNode {
   return inspectorContributions
-    .find((contribution) => contribution.kind === context.object.kind)
+    .find((contribution) => contribution.supports(context.object))
     ?.render(context);
 }

@@ -1,0 +1,29 @@
+{
+  "laws": {
+    "stableNonEmptyIds": true,
+    "duplicateIdsRejected": true,
+    "deterministicOrder": "order ascending, then id ascending",
+    "supportPredicate": true,
+    "hiddenGlobalRegistration": false
+  },
+  "inspectors": [
+    { "id": "stickers.label", "order": 100, "owner": "modules/stickers", "supports": "sticker" }
+  ],
+  "renderers": [
+    { "id": "stickers.renderer", "order": 100, "owner": "modules/stickers", "supports": "sticker" }
+  ],
+  "overlays": [
+    { "id": "stickers.selected-label-overlay", "order": 100, "owner": "modules/stickers", "supports": "selected sticker" }
+  ],
+  "toolPanels": {
+    "model": "existing typed CanvasToolDefinition registry rendered by CanvasToolsSection",
+    "stickerToolId": "create-sticker"
+  },
+  "matchKind": {
+    "source": "machinalayout/match",
+    "uses": [
+      "exhaustive built-in CanvasObject rendering after module renderer contributions",
+      "exhaustive command-terminal side-effect dispatch"
+    ]
+  }
+}

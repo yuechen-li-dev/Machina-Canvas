@@ -1,0 +1,21 @@
+{
+  "milestone": "MACHINA-CANVAS-REACT-INTEGRATION-M12B",
+  "formerMonolith": {
+    "path": "src/app/CanvasEditorApp.tsx",
+    "lines": 7,
+    "role": "compatibility exports only"
+  },
+  "largestReactFiles": [
+    { "path": "src/app/shell/CanvasEditorShell.tsx", "lines": 1201, "bytes": 42241 },
+    { "path": "src/app/inspector/Inspector.tsx", "lines": 1200, "bytes": 49487 },
+    { "path": "src/modules/sprites/ui/SpriteInspectorSections.tsx", "lines": 948, "bytes": 31677 },
+    { "path": "src/app/canvas/CanvasPanel.tsx", "lines": 544, "bytes": 20583 },
+    { "path": "src/modules/mechanical/ui/MechanicalAnnotationSidecarSvg.tsx", "lines": 492, "bytes": 15396 }
+  ],
+  "largestController": {
+    "path": "src/core/editor/CanvasEditorSession.ts",
+    "lines": 259,
+    "bytes": 9103
+  },
+  "remainingSink": "CanvasEditorShell still coordinates browser async loading/export state; Inspector still hosts legacy built-in sections. Both are bounded follow-up targets."
+}

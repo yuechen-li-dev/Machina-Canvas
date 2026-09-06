@@ -1,0 +1,31 @@
+{
+  "session": {
+    "path": "src/core/editor/CanvasEditorSession.ts",
+    "owns": [
+      "document",
+      "viewport",
+      "active mode",
+      "selection through commands",
+      "command log and results",
+      "registered tool execution",
+      "export artifacts and cart",
+      "export bundle"
+    ],
+    "frameworkFree": true,
+    "observation": ["getSnapshot", "subscribe"]
+  },
+  "capabilityControllers": [
+    { "capability": "images", "path": "src/modules/images/controller.ts" },
+    { "capability": "sprites", "path": "src/modules/sprites/controller.ts" },
+    { "capability": "mechanical", "path": "src/modules/mechanical/controller.ts" }
+  ],
+  "reactTransientState": [
+    "accordion and collapsed flags",
+    "terminal and command text input",
+    "file inputs",
+    "pointer pan and sprite drag state",
+    "hover state",
+    "clipboard and download status"
+  ],
+  "browserBoundary": "src/app/files/browserFileLoading.ts"
+}

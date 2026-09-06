@@ -1,7 +1,7 @@
 import {
-  defineCanvasCommandRegistry,
   type CanvasCommandDefinition,
   type CanvasCommandLike,
+  defineCanvasCommandRegistry,
 } from "../core/commands/contracts";
 import type { CanvasDocument } from "../sceneModel";
 import { addStickerCommandDefinition, renameStickerCommandDefinition } from "./stickers/command";

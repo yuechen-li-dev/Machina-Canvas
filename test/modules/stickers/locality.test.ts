@@ -6,7 +6,15 @@ const stickerModuleRoot = join(process.cwd(), "src", "modules", "stickers");
 
 describe("Sticker module locality", () => {
   it("keeps each capability implementation in the sticker module", () => {
-    for (const file of ["model.ts", "command.ts", "tool.ts", "inspector.tsx", "export.ts"]) {
+    for (const file of [
+      "model.ts",
+      "command.ts",
+      "tool.ts",
+      "inspector.tsx",
+      "export.ts",
+      "ui/renderer.tsx",
+      "ui/overlay.tsx",
+    ]) {
       const source = readFileSync(join(stickerModuleRoot, file), "utf8");
 
       expect(source.length).toBeGreaterThan(0);

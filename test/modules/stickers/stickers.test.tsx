@@ -1,5 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import {
+  type CanvasObjectRenderContext,
+  canvasObjectRendererContributions,
+  canvasOverlayContributions,
+  renderCanvasModuleObject,
+  renderCanvasModuleOverlays,
+} from "../../../src/app/canvas/objectContributions";
 import { renderCanvasModuleInspector } from "../../../src/app/inspectorContributions";
 import { createCanvasExportBundle } from "../../../src/canvasExport";
 import { canvasModules } from "../../../src/modules";
@@ -83,6 +90,54 @@ describe("Sticker module", () => {
     });
   });
 
+  it("renders its object and selected overlay through the registered canvas contributions", () => {
+    const onSelect = vi.fn();
+    const context: CanvasObjectRenderContext = {
+      document: createStickerFixtureDocument({ [stickerFixture.id]: stickerFixture }),
+      object: stickerFixture,
+      selected: true,
+      onSelect,
+      commonSvgProps: {
+        "data-canvas-object-id": stickerFixture.id,
+        "data-canvas-kind": stickerFixture.kind,
+        "data-canvas-name": stickerFixture.name,
+        onClick: () => onSelect(stickerFixture.id),
+      },
+    };
+
+    const { container } = render(
+      <svg>
+        <title>Sticker contribution proof</title>
+        {renderCanvasModuleObject(context)}
+        {renderCanvasModuleOverlays(context)}
+      </svg>,
+    );
+
+    expect(canvasObjectRendererContributions.map((contribution) => contribution.id)).toContain(
+      "stickers.renderer",
+    );
+    expect(canvasOverlayContributions.map((contribution) => contribution.id)).toContain(
+      "stickers.selected-label-overlay",
+    );
+    expect(container.querySelector('[data-canvas-object-id="sticker-alpha"]')).not.toBeNull();
+    expect(
+      container.querySelector('[data-canvas-overlay-id="stickers.selected-label-overlay"]')
+        ?.textContent,
+    ).toBe("Sticker: Alpha");
+
+    const unselectedContainer = render(
+      <svg>
+        <title>Unselected sticker contribution proof</title>
+        {renderCanvasModuleOverlays({ ...context, selected: false })}
+      </svg>,
+    ).container;
+    expect(
+      unselectedContainer.querySelector(
+        '[data-canvas-overlay-id="stickers.selected-label-overlay"]',
+      ),
+    ).toBeNull();
+  });
+
   it("renders and edits through the registered inspector contribution", () => {
     const runCommand = vi.fn();
     const stickerModule = canvasModules.find((module) => module.id === "stickers");
@@ -101,7 +156,17 @@ describe("Sticker module", () => {
   });
 
   it("contributes a deterministic sticker artifact to the real export bundle", () => {
-    const document = createStickerFixtureDocument({ [stickerFixture.id]: stickerFixture });
+    const laterSticker: StickerObject = {
+      ...stickerFixture,
+      id: "sticker-zulu",
+      name: "Zulu",
+      label: "Zulu",
+      src: "data:image/svg+xml,zulu",
+    };
+    const document = createStickerFixtureDocument({
+      [laterSticker.id]: laterSticker,
+      [stickerFixture.id]: stickerFixture,
+    });
     const directArtifacts = stickerExportContribution.collect(document);
     const bundle = createCanvasExportBundle(document);
     const artifact = bundle.files.find((candidate) => candidate.path === "stickers/stickers.json");
@@ -113,6 +178,12 @@ describe("Sticker module", () => {
           id: "sticker-alpha",
           label: "Alpha",
           frame: { x: 12, y: 18, width: 96, height: 40 },
+        },
+        {
+          id: "sticker-zulu",
+          label: "Zulu",
+          frame: { x: 12, y: 18, width: 96, height: 40 },
+          src: "data:image/svg+xml,zulu",
         },
       ],
     });

@@ -1,0 +1,28 @@
+{
+  "extension": {
+    "agent": "fresh-context",
+    "capability": "Sticker",
+    "implemented": [
+      "typed record",
+      "inspector label control",
+      "selected-label overlay",
+      "registered create-sticker tool action",
+      "deterministically ordered export"
+    ],
+    "touchedFiles": [
+      "src/modules/stickers/export.ts",
+      "test/modules/stickers/stickers.test.tsx",
+      "test/modules/stickers/locality.test.ts"
+    ],
+    "centralReactEdits": []
+  },
+  "bugFix": {
+    "prompt": "Sticker label does not update in inspector preview.",
+    "result": "not reproducible after M12B decomposition",
+    "rootCauseOfMissingConfidence": "prior test stopped at command emission and did not prove controller application plus rerender",
+    "regressionTest": "test/modules/stickers/inspector-preview.test.tsx",
+    "verifiedUpdates": ["controlled inspector input", "canvas sticker text", "selected overlay text"],
+    "productionEdits": [],
+    "centralReactEdits": []
+  }
+}

@@ -2,7 +2,8 @@ import type { CanvasInspectorContribution } from "../../app/inspectorContributio
 
 export const stickerInspectorContribution: CanvasInspectorContribution = {
   id: "stickers.label",
-  kind: "sticker",
+  order: 100,
+  supports: (object) => object.kind === "sticker",
   render({ object, runCommand }) {
     if (object.kind !== "sticker") return null;
     return (
