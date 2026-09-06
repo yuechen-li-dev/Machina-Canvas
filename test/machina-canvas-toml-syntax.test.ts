@@ -325,7 +325,11 @@ x = 24
     );
     expect(spec.frames).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ id: "prop.0", sourceKind: "grid", sourceGridId: "props_top" }),
+        expect.objectContaining({
+          id: "prop.0",
+          sourceKind: "grid",
+          sourceGridId: "props_top",
+        }),
       ]),
     );
     expect(text).toContain("[cut_grids.props_top]");

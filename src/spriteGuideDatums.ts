@@ -294,7 +294,12 @@ export function snapSpriteFrameRectToDatum(
   }
 
   if (target.anchor === "left") {
-    return { x: Math.round(target.coordinate), y: rect.y, width: rect.width, height: rect.height };
+    return {
+      x: Math.round(target.coordinate),
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+    };
   }
   if (target.anchor === "right") {
     return {
@@ -313,7 +318,12 @@ export function snapSpriteFrameRectToDatum(
     };
   }
   if (target.anchor === "top") {
-    return { x: rect.x, y: Math.round(target.coordinate), width: rect.width, height: rect.height };
+    return {
+      x: rect.x,
+      y: Math.round(target.coordinate),
+      width: rect.width,
+      height: rect.height,
+    };
   }
   if (target.anchor === "bottom") {
     return {

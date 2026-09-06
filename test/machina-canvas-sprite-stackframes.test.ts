@@ -236,7 +236,9 @@ labels = ["dup"]
 
     expect(spec.diagnostics).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ code: "DuplicateSpriteStackframeFrameLabel" }),
+        expect.objectContaining({
+          code: "DuplicateSpriteStackframeFrameLabel",
+        }),
       ]),
     );
   });
@@ -317,7 +319,9 @@ labels = ["hero.0"]
 
   it("preserves runtime stackframes, omits cut_grids, and re-parses exported TOML", () => {
     const sidecar = createSidecar();
-    const runtimeToml = serializeCompiledRuntimeSpriteToml({ spriteSidecar: sidecar });
+    const runtimeToml = serializeCompiledRuntimeSpriteToml({
+      spriteSidecar: sidecar,
+    });
 
     expect(runtimeToml).toContain('[stackframes."maya.down"]');
     expect(runtimeToml).toContain('[stackframes."maya.right"]');
@@ -347,7 +351,16 @@ labels = ["hero.0"]
         kind: "canvasGuideSidecar",
         id: "guide",
         units: "px",
-        regions: [{ id: "note", kind: "sprite-region", x: 0, y: 0, width: 16, height: 16 }],
+        regions: [
+          {
+            id: "note",
+            kind: "sprite-region",
+            x: 0,
+            y: 0,
+            width: 16,
+            height: 16,
+          },
+        ],
         datums: [],
         dimensions: [],
         alignmentMarks: [],
@@ -369,7 +382,9 @@ labels = ["hero.0"]
       height: 102,
     });
     const editedSidecar = { ...sidecar, spec: editedSpec };
-    const runtimeToml = serializeCanvasSpriteToml(editedSidecar, { mode: "runtime" });
+    const runtimeToml = serializeCanvasSpriteToml(editedSidecar, {
+      mode: "runtime",
+    });
 
     expect(runtimeToml).toContain('[stackframes."maya.down"]');
     expect(runtimeToml).toContain('[frames."maya.down.1"]');

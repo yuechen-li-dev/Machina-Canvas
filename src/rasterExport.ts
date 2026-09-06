@@ -144,7 +144,9 @@ export async function lowerSvgToRasterBlob(
   options?: RasterExportOptions,
 ): Promise<Blob> {
   const normalized = normalizeRasterExportOptions(options);
-  const svgBlob = new Blob([absolutizeSvgImageHrefs(svgText)], { type: "image/svg+xml" });
+  const svgBlob = new Blob([absolutizeSvgImageHrefs(svgText)], {
+    type: "image/svg+xml",
+  });
   const url = URL.createObjectURL(svgBlob);
 
   try {

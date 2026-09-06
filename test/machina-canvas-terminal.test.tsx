@@ -138,8 +138,9 @@ describe("MachinaCanvas terminal commands", () => {
 
   it("reports scene summary", () => {
     expect(
-      executeCanvasTerminalCommand("summary", { document: createTerminalDocument() }).logEntry
-        ?.message,
+      executeCanvasTerminalCommand("summary", {
+        document: createTerminalDocument(),
+      }).logEntry?.message,
     ).toContain("Overlay mode Focus");
   });
 
@@ -280,7 +281,11 @@ describe("MachinaCanvas terminal commands", () => {
         exportPresets: CANVAS_EXPORT_PRESETS,
       }).sideEffects,
     ).toEqual([
-      { kind: "setExportArtifactSelected", artifactId: exportArtifacts[0].id, selected: true },
+      {
+        kind: "setExportArtifactSelected",
+        artifactId: exportArtifacts[0].id,
+        selected: true,
+      },
     ]);
   });
 
@@ -294,27 +299,33 @@ describe("MachinaCanvas terminal commands", () => {
 
   it("returns an error for unknown commands", () => {
     expect(
-      executeCanvasTerminalCommand("wat", { document: createTerminalDocument() }).logEntry?.kind,
+      executeCanvasTerminalCommand("wat", {
+        document: createTerminalDocument(),
+      }).logEntry?.kind,
     ).toBe("error");
   });
 
   it("returns an error for invalid args", () => {
     expect(
-      executeCanvasTerminalCommand("nudge-frame nope 2", { document: createTerminalDocument() })
-        .logEntry?.kind,
+      executeCanvasTerminalCommand("nudge-frame nope 2", {
+        document: createTerminalDocument(),
+      }).logEntry?.kind,
     ).toBe("error");
   });
 
   it("clears the log through a clear action", () => {
     expect(
-      executeCanvasTerminalCommand("clear", { document: createTerminalDocument() }).clearLog,
+      executeCanvasTerminalCommand("clear", {
+        document: createTerminalDocument(),
+      }).clearLog,
     ).toBe(true);
   });
 
   it("does not eval arbitrary code", () => {
     expect(
-      executeCanvasTerminalCommand("alert(1)", { document: createTerminalDocument() }).logEntry
-        ?.kind,
+      executeCanvasTerminalCommand("alert(1)", {
+        document: createTerminalDocument(),
+      }).logEntry?.kind,
     ).toBe("error");
   });
 });
@@ -362,7 +373,9 @@ describe("CanvasCommandTerminal UI", () => {
     }
     render(<Wrapper />);
 
-    fireEvent.change(screen.getByLabelText("Command input"), { target: { value: "help" } });
+    fireEvent.change(screen.getByLabelText("Command input"), {
+      target: { value: "help" },
+    });
     fireEvent.submit(
       screen.getByRole("button", { name: "Run" }).closest("form") as HTMLFormElement,
     );

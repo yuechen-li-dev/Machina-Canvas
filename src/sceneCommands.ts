@@ -1,4 +1,6 @@
 import { createBlockoutSidecarObject } from "./blockoutSidecar";
+import { getCanvasModuleCommandDefinition } from "./modules/commandContributions";
+import type { StickerCommand } from "./modules/stickers/command";
 import { resolveCanvasFrame } from "./canvasFrames";
 import { addCanvasObjectToLayerGroup, createCanvasLayerGroup } from "./layerTree";
 import { selectSpriteFrameInSpec, updateSpriteFrameRectInSpec } from "./spriteSidecar";
@@ -260,7 +262,8 @@ export type CanvasCommand =
       maxDistance?: number;
       constrainToGuideRegion?: boolean;
       restrictToRegion?: boolean;
-    };
+    }
+  | StickerCommand;
 
 export type CanvasCommandValidationContext = {
   referenceGrid?: Partial<ReferenceGridConfig>;
@@ -1416,6 +1419,14 @@ export function validateCanvasCommand(
     return makeResult(diagnostics);
   }
 
+  const moduleDefinition = getCanvasModuleCommandDefinition(command.kind);
+  if (moduleDefinition?.is(command as { kind: string })) {
+    diagnostics.push(
+      ...moduleDefinition.validate(document, command as { kind: string }, commandIndex, context),
+    );
+    return makeResult(diagnostics);
+  }
+
   switch (command.kind) {
     case "select":
       if (command.id !== undefined)
@@ -2308,6 +2319,14 @@ export function applyCanvasCommand(
   command: CanvasCommand,
   context?: CanvasCommandApplyContext,
 ): CanvasCommandApplyResult {
+  if (command.kind === "addSticker" || command.kind === "renameSticker") {
+    const moduleDefinition = getCanvasModuleCommandDefinition(command.kind);
+    if (!moduleDefinition?.is(command)) {
+      throw new Error(`Missing command contribution for "${command.kind}".`);
+    }
+    return moduleDefinition.apply(document, command, context) as CanvasCommandApplyResult;
+  }
+
   const changes: CanvasCommandChange[] = [];
   let nextDocument = document;
 
@@ -2388,7 +2407,12 @@ export function applyCanvasCommand(
       ),
     };
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "addBlockoutSidecarObject") {
@@ -2456,7 +2480,12 @@ export function applyCanvasCommand(
       ),
     };
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "addGuideSidecarObject") {
@@ -2527,7 +2556,12 @@ export function applyCanvasCommand(
       ),
     };
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "addSpriteSidecarObject") {
@@ -2588,7 +2622,10 @@ export function applyCanvasCommand(
       [command.object.id]: command.object,
     };
     if (command.attach && targetImage) {
-      nextObjects[targetImage.id] = { ...targetImage, spriteSidecarId: command.object.id };
+      nextObjects[targetImage.id] = {
+        ...targetImage,
+        spriteSidecarId: command.object.id,
+      };
     }
 
     nextDocument = {
@@ -2602,7 +2639,12 @@ export function applyCanvasCommand(
       ),
     };
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setUiProp") {
@@ -2630,7 +2672,12 @@ export function applyCanvasCommand(
       });
     }
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "removeObject") {
@@ -2721,7 +2768,10 @@ export function applyCanvasCommand(
         before: command.id,
         after: undefined,
       });
-      return { ...layer, objectIds: layer.objectIds.filter((objectId) => objectId !== command.id) };
+      return {
+        ...layer,
+        objectIds: layer.objectIds.filter((objectId) => objectId !== command.id),
+      };
     });
 
     if (document.selectedObjectId === command.id) {
@@ -2745,7 +2795,12 @@ export function applyCanvasCommand(
         document.selectedObjectId === command.id ? undefined : document.selectedObjectId,
     };
 
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "select") {
@@ -2778,17 +2833,32 @@ export function applyCanvasCommand(
 
   if (command.kind === "align") {
     nextDocument = applyAlignCommand(document, command, changes);
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "distribute") {
     nextDocument = applyDistributeCommand(document, command, changes);
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "alignToGrid") {
     nextDocument = applyAlignToGridCommand(document, command, changes, context);
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "attachAlphaMap") {
@@ -2803,9 +2873,17 @@ export function applyCanvasCommand(
     }
     changeField(changes, source, "alphaMapId", command.alphaId);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, source.id, { ...source, alphaMapId: command.alphaId });
+      nextDocument = replaceObject(document, source.id, {
+        ...source,
+        alphaMapId: command.alphaId,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "detachAlphaMap") {
@@ -2823,7 +2901,12 @@ export function applyCanvasCommand(
       const { alphaMapId: _alphaMapId, ...nextSource } = source;
       nextDocument = replaceObject(document, source.id, nextSource);
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "attachSketchOverlay") {
@@ -2855,7 +2938,12 @@ export function applyCanvasCommand(
         });
       }
     }
-    return { document: nextScene, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextScene,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "detachSketchOverlay") {
@@ -2886,7 +2974,12 @@ export function applyCanvasCommand(
         });
       }
     }
-    return { document: nextScene, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextScene,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setSketchOverlayVisible") {
@@ -2901,9 +2994,17 @@ export function applyCanvasCommand(
     }
     changeField(changes, overlay, "visible", command.visible);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, overlay.id, { ...overlay, visible: command.visible });
+      nextDocument = replaceObject(document, overlay.id, {
+        ...overlay,
+        visible: command.visible,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "attachGuideSidecar") {
@@ -2933,7 +3034,12 @@ export function applyCanvasCommand(
         guide: { ...guide.guide, target: source.id },
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "detachGuideSidecar") {
@@ -2954,7 +3060,12 @@ export function applyCanvasCommand(
         guide: { ...guide.guide, target: undefined },
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setGuideSidecarVisible") {
@@ -2969,9 +3080,17 @@ export function applyCanvasCommand(
     }
     changeField(changes, guide, "visible", command.visible);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, guide.id, { ...guide, visible: command.visible });
+      nextDocument = replaceObject(document, guide.id, {
+        ...guide,
+        visible: command.visible,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setGuideSidecarOpacity") {
@@ -2986,9 +3105,17 @@ export function applyCanvasCommand(
     }
     changeField(changes, guide, "opacity", command.opacity);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, guide.id, { ...guide, opacity: command.opacity });
+      nextDocument = replaceObject(document, guide.id, {
+        ...guide,
+        opacity: command.opacity,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "attachBlockoutSidecar") {
@@ -3017,7 +3144,12 @@ export function applyCanvasCommand(
         targetObjectId: target.id,
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "detachBlockoutSidecar") {
@@ -3037,7 +3169,12 @@ export function applyCanvasCommand(
         targetObjectId: undefined,
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setBlockoutSidecarVisible") {
@@ -3057,7 +3194,12 @@ export function applyCanvasCommand(
         visible: command.visible,
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setBlockoutSidecarOpacity") {
@@ -3077,7 +3219,12 @@ export function applyCanvasCommand(
         opacity: command.opacity,
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "attachSpriteSidecar") {
@@ -3109,7 +3256,12 @@ export function applyCanvasCommand(
         });
       }
     }
-    return { document: nextScene, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextScene,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "detachSpriteSidecar") {
@@ -3140,7 +3292,12 @@ export function applyCanvasCommand(
         });
       }
     }
-    return { document: nextScene, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextScene,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setSpriteSidecarVisible") {
@@ -3155,9 +3312,17 @@ export function applyCanvasCommand(
     }
     changeField(changes, sidecar, "visible", command.visible);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, sidecar.id, { ...sidecar, visible: command.visible });
+      nextDocument = replaceObject(document, sidecar.id, {
+        ...sidecar,
+        visible: command.visible,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setSpriteOverlayOption") {
@@ -3186,7 +3351,12 @@ export function applyCanvasCommand(
         },
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "setSpriteOverlayDisplayMode") {
@@ -3215,7 +3385,12 @@ export function applyCanvasCommand(
         },
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "selectSpriteFrame") {
@@ -3243,7 +3418,12 @@ export function applyCanvasCommand(
         spec: nextSpec,
       });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "updateSpriteFrameRect") {
@@ -3293,9 +3473,17 @@ export function applyCanvasCommand(
         before: sidecar.spec.rawToml,
         after: nextSpec.rawToml,
       });
-      nextDocument = replaceObject(document, sidecar.id, { ...sidecar, spec: nextSpec });
+      nextDocument = replaceObject(document, sidecar.id, {
+        ...sidecar,
+        spec: nextSpec,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "nudgeSpriteFrame") {
@@ -3346,8 +3534,16 @@ export function applyCanvasCommand(
       before: sidecar.spec.rawToml,
       after: nextSpec.rawToml,
     });
-    nextDocument = replaceObject(document, sidecar.id, { ...sidecar, spec: nextSpec });
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    nextDocument = replaceObject(document, sidecar.id, {
+      ...sidecar,
+      spec: nextSpec,
+    });
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "resizeSpriteFrame") {
@@ -3398,8 +3594,16 @@ export function applyCanvasCommand(
       before: sidecar.spec.rawToml,
       after: nextSpec.rawToml,
     });
-    nextDocument = replaceObject(document, sidecar.id, { ...sidecar, spec: nextSpec });
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    nextDocument = replaceObject(document, sidecar.id, {
+      ...sidecar,
+      spec: nextSpec,
+    });
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (command.kind === "clampSpriteFrameToGuideRegion") {
@@ -3426,7 +3630,12 @@ export function applyCanvasCommand(
       frameId: command.frameId,
     });
     if (!guideContext) {
-      return { document, command, changes, message: "No guide region found for selected frame." };
+      return {
+        document,
+        command,
+        changes,
+        message: "No guide region found for selected frame.",
+      };
     }
     const nextSpec = updateSpriteFrameRectInSpec(
       sidecar.spec,
@@ -3440,9 +3649,17 @@ export function applyCanvasCommand(
         before: frame,
         after: nextSpec.frames.find((candidate) => candidate.id === command.frameId),
       });
-      nextDocument = replaceObject(document, sidecar.id, { ...sidecar, spec: nextSpec });
+      nextDocument = replaceObject(document, sidecar.id, {
+        ...sidecar,
+        spec: nextSpec,
+      });
     }
-    return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+    return {
+      document: nextDocument,
+      command,
+      changes,
+      message: messageFor(command, changes),
+    };
   }
 
   if (
@@ -3508,7 +3725,10 @@ export function applyCanvasCommand(
         before: sidecar.spec.rawToml,
         after: nextSpec.rawToml,
       });
-      nextDocument = replaceObject(document, sidecar.id, { ...sidecar, spec: nextSpec });
+      nextDocument = replaceObject(document, sidecar.id, {
+        ...sidecar,
+        spec: nextSpec,
+      });
     }
     return {
       document: nextDocument,
@@ -3609,16 +3829,27 @@ export function applyCanvasCommand(
   } else if (command.kind === "setFill") {
     changeField(changes, object, "fill", command.fill);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, object.id, { ...object, fill: command.fill });
+      nextDocument = replaceObject(document, object.id, {
+        ...object,
+        fill: command.fill,
+      });
     }
   } else {
     changeField(changes, object, "stroke", command.stroke);
     if (changes.length > 0) {
-      nextDocument = replaceObject(document, object.id, { ...object, stroke: command.stroke });
+      nextDocument = replaceObject(document, object.id, {
+        ...object,
+        stroke: command.stroke,
+      });
     }
   }
 
-  return { document: nextDocument, command, changes, message: messageFor(command, changes) };
+  return {
+    document: nextDocument,
+    command,
+    changes,
+    message: messageFor(command, changes),
+  };
 }
 
 export function selectSpriteFrame(

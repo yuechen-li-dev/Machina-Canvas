@@ -93,7 +93,14 @@ function createGuideDocument() {
     height: 720,
     unit: "px",
     unitSystem: createCanvasUnitSystem("px"),
-    layers: [{ id: "sprites", name: "Sprites", visible: true, objectIds: [image.id, object.id] }],
+    layers: [
+      {
+        id: "sprites",
+        name: "Sprites",
+        visible: true,
+        objectIds: [image.id, object.id],
+      },
+    ],
     objects: {
       [image.id]: image,
       [object.id]: object,
@@ -187,7 +194,9 @@ describe("MachinaCanvas guide sidecars", () => {
   it("creates attached and unattached guide sidecar scene objects", () => {
     const guide = parseGuideSidecarToml(sampleToml);
     const attached = createGuideSidecarObject(image, guide);
-    const unattached = createUnattachedGuideSidecarObject(guide, { layerId: "sprites" });
+    const unattached = createUnattachedGuideSidecarObject(guide, {
+      layerId: "sprites",
+    });
 
     expect(attached.targetId).toBe(image.id);
     expect(attached.guide.target).toBe(image.id);

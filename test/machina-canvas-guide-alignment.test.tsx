@@ -288,7 +288,11 @@ describe("MachinaCanvas guide alignment", () => {
       targetMark: marks.find((mark) => mark.markId === "target_origin")!,
     });
 
-    expect(translation).toMatchObject({ kind: "translation", dx: 205, dy: 265 });
+    expect(translation).toMatchObject({
+      kind: "translation",
+      dx: 205,
+      dy: 265,
+    });
   });
 
   it("returns zero translation for already aligned marks", () => {
@@ -380,11 +384,16 @@ describe("MachinaCanvas guide alignment", () => {
     const directNext = direct.commands
       ? applyCanvasCommands(createAlignmentDocument(), direct.commands).document
       : createAlignmentDocument();
-    expect(directNext.objects["source-image"]).toMatchObject({ x: 215, y: 285 });
+    expect(directNext.objects["source-image"]).toMatchObject({
+      x: 215,
+      y: 285,
+    });
 
     const selected = executeCanvasTerminalCommand(
       "align-selected-by-mark source_origin target-image target_origin",
-      { document: createAlignmentDocument({ selectedObjectId: "source-image" }) },
+      {
+        document: createAlignmentDocument({ selectedObjectId: "source-image" }),
+      },
     );
     const selectedNext = selected.commands
       ? applyCanvasCommands(
@@ -392,7 +401,10 @@ describe("MachinaCanvas guide alignment", () => {
           selected.commands,
         ).document
       : createAlignmentDocument({ selectedObjectId: "source-image" });
-    expect(selectedNext.objects["source-image"]).toMatchObject({ x: 215, y: 285 });
+    expect(selectedNext.objects["source-image"]).toMatchObject({
+      x: 215,
+      y: 285,
+    });
   });
 
   it("returns terminal errors for invalid alignment args", () => {

@@ -118,7 +118,10 @@ describe("MachinaCanvas reference grid command refs", () => {
 
   it("converts refs back to canvas coordinates", () => {
     expect(gridPointRefToCanvasPoint("A1", 600, 400)).toEqual({ x: 50, y: 50 });
-    expect(gridPointRefToCanvasPoint("D3.ne", 600, 400)).toEqual({ x: 400, y: 200 });
+    expect(gridPointRefToCanvasPoint("D3.ne", 600, 400)).toEqual({
+      x: 400,
+      y: 200,
+    });
     expect(gridPointRefToCanvasPoint("B4@0.5,0.25", 600, 400)).toEqual({
       x: 150,
       y: 325,
@@ -145,7 +148,11 @@ describe("MachinaCanvas reference grid command refs", () => {
 
     expect(validateCanvasCommands(document, valid).ok).toBe(true);
     expect(
-      validateCanvasCommands(document, { kind: "moveToGrid", id: "a", ref: "Z1" }).diagnostics,
+      validateCanvasCommands(document, {
+        kind: "moveToGrid",
+        id: "a",
+        ref: "Z1",
+      }).diagnostics,
     ).toContainEqual(expect.objectContaining({ code: "InvalidGridRef" }));
     expect(
       validateCanvasCommands(document, {
@@ -164,8 +171,11 @@ describe("MachinaCanvas reference grid command refs", () => {
       }).diagnostics,
     ).toContainEqual(expect.objectContaining({ code: "InvalidGridRef" }));
     expect(
-      validateCanvasCommands(document, { kind: "resizeToGridSpan", id: "b", span: "A1.ne-B2" })
-        .diagnostics,
+      validateCanvasCommands(document, {
+        kind: "resizeToGridSpan",
+        id: "b",
+        span: "A1.ne-B2",
+      }).diagnostics,
     ).toContainEqual(expect.objectContaining({ code: "InvalidGridSpan" }));
     expect(
       validateCanvasCommands(document, {
@@ -213,7 +223,12 @@ describe("MachinaCanvas reference grid command refs", () => {
     expect(applied.document.objects.c.y).toBe(230);
     expect(applied.results[0].message).toBe("Aligned 2 objects left to A1.w.");
     expect(applied.results[1].changes).toContainEqual(
-      expect.objectContaining({ objectId: "c", field: "y", before: 200, after: 230 }),
+      expect.objectContaining({
+        objectId: "c",
+        field: "y",
+        before: 200,
+        after: 230,
+      }),
     );
     expect(applied.results[2].changes.map((change) => change.field)).toEqual([
       "x",
@@ -246,7 +261,12 @@ describe("MachinaCanvas reference grid command refs", () => {
       },
     ]);
 
-    expect(absolute.document.objects.a).toMatchObject({ x: 5, y: 6, width: 70, height: 80 });
+    expect(absolute.document.objects.a).toMatchObject({
+      x: 5,
+      y: 6,
+      width: 70,
+      height: 80,
+    });
     expect(absolute.document.objects.a.frame).toEqual({
       kind: "absolute",
       x: 5,
@@ -254,8 +274,18 @@ describe("MachinaCanvas reference grid command refs", () => {
       width: 70,
       height: 80,
     });
-    expect(anchor.document.objects.a).toMatchObject({ x: 520, y: 300, width: 70, height: 80 });
-    expect(grid.document.objects.a).toMatchObject({ x: 140, y: 145, width: 20, height: 10 });
+    expect(anchor.document.objects.a).toMatchObject({
+      x: 520,
+      y: 300,
+      width: 70,
+      height: 80,
+    });
+    expect(grid.document.objects.a).toMatchObject({
+      x: 140,
+      y: 145,
+      width: 20,
+      height: 10,
+    });
     expect(grid.results[0].changes.map((change) => change.field)).toEqual(["frame", "x", "y"]);
     expect(grid.results[0].message).toBe("Set a frame to referenceGrid.");
   });

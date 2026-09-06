@@ -301,7 +301,11 @@ export async function runGenerateAlphaMapTool(input: CanvasToolInput, document: 
   const alphaObject = createAlphaMapObjectFromAsset(document, source, asset);
   const commands: CanvasCommand[] = [{ kind: "addImageObject", object: alphaObject }];
   if (options.autoAttach) {
-    commands.push({ kind: "attachAlphaMap", sourceId: source.id, alphaId: alphaObject.id });
+    commands.push({
+      kind: "attachAlphaMap",
+      sourceId: source.id,
+      alphaId: alphaObject.id,
+    });
   }
 
   const applied = applyCanvasCommands(document, commands);

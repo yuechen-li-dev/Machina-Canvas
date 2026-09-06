@@ -101,7 +101,13 @@ describe("MachinaCanvas canvas frames", () => {
   it("resolves referenceGrid frames with anchor and size", () => {
     expect(
       resolveCanvasFrame(
-        { kind: "referenceGrid", ref: "B2.c", anchor: "center", width: 40, height: 20 },
+        {
+          kind: "referenceGrid",
+          ref: "B2.c",
+          anchor: "center",
+          width: 40,
+          height: 20,
+        },
         { document },
       ),
     ).toEqual({ x: 130, y: 140, width: 40, height: 20 });
@@ -138,7 +144,12 @@ describe("MachinaCanvas canvas frames", () => {
     const resolved = resolveCanvasDocumentFrames(document);
 
     expect(resolved).not.toBe(document);
-    expect(resolved.objects.a).toMatchObject({ x: 20, y: 30, width: 50, height: 60 });
+    expect(resolved.objects.a).toMatchObject({
+      x: 20,
+      y: 30,
+      width: 50,
+      height: 60,
+    });
     expect(resolved.objects.b).toBe(document.objects.b);
     expect(JSON.stringify(document)).toBe(before);
   });

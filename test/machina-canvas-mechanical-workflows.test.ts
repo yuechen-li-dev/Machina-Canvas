@@ -61,8 +61,18 @@ function createMechanicalWorkflowDocument(): CanvasDocument {
     unit: "mm",
     unitSystem: createCanvasUnitSystem("mm"),
     layers: [
-      { id: "geometry", name: "Geometry", visible: true, objectIds: [plate.id, centerImage.id] },
-      { id: "annotations", name: "Annotations", visible: true, objectIds: ["mech"] },
+      {
+        id: "geometry",
+        name: "Geometry",
+        visible: true,
+        objectIds: [plate.id, centerImage.id],
+      },
+      {
+        id: "annotations",
+        name: "Annotations",
+        visible: true,
+        objectIds: ["mech"],
+      },
     ],
     layerGroups: [{ id: "sheet", title: "Mechanical sheet", objectIds: [plate.id] }],
     objects: {
@@ -134,7 +144,12 @@ function createReferenceSidecar(scene: CanvasDocument) {
 describe("MachinaCanvas mechanical workflows", () => {
   it("exposes A4 landscape constants and content layout", () => {
     expect(MECHANICAL_A4_LANDSCAPE_MM).toEqual({ width: 297, height: 210 });
-    expect(MECHANICAL_A4_PRINT_MARGIN_MM).toEqual({ top: 10, right: 10, bottom: 10, left: 10 });
+    expect(MECHANICAL_A4_PRINT_MARGIN_MM).toEqual({
+      top: 10,
+      right: 10,
+      bottom: 10,
+      left: 10,
+    });
     expect(getMechanicalA4LandscapeLayout()).toEqual({
       widthMm: 297,
       heightMm: 210,
@@ -147,7 +162,12 @@ describe("MachinaCanvas mechanical workflows", () => {
     const annotations = createMechanicalAnnotationSet({
       id: "sheet-ok",
       units: "mm",
-      sheet: { size: "A4", orientation: "landscape", units: "mm", scale: "1:1" },
+      sheet: {
+        size: "A4",
+        orientation: "landscape",
+        units: "mm",
+        scale: "1:1",
+      },
     });
     expect(validateMechanicalAnnotations(annotations)).toEqual([]);
     expect(getMechanicalSheetDimensions(annotations.sheet!)).toEqual([297, 210]);
@@ -165,7 +185,13 @@ describe("MachinaCanvas mechanical workflows", () => {
     const annotations = createMechanicalAnnotationSet({
       id: "sheet-bad",
       units: "mm",
-      sheet: { size: "Custom", orientation: "portrait", units: "mm", width: 0, height: -1 },
+      sheet: {
+        size: "Custom",
+        orientation: "portrait",
+        units: "mm",
+        width: 0,
+        height: -1,
+      },
     });
     const diagnostics = validateMechanicalAnnotations(annotations);
     expect(diagnostics.some((entry) => entry.path === "annotations.sheet.width")).toBe(true);
@@ -173,32 +199,47 @@ describe("MachinaCanvas mechanical workflows", () => {
   });
 
   it("accepts geometry references with object id and anchor", () => {
-    const reference: MechanicalGeometryReference = { objectId: "plate", anchor: "topRight" };
+    const reference: MechanicalGeometryReference = {
+      objectId: "plate",
+      anchor: "topRight",
+    };
     expect(reference.objectId).toBe("plate");
     expect(reference.anchor).toBe("topRight");
   });
 
   it("resolves rectangle-like anchors from existing scene geometry", () => {
     const scene = createMechanicalWorkflowDocument();
-    expect(resolveMechanicalGeometryAnchor(scene, { objectId: "plate", anchor: "center" })).toEqual(
-      [70, 50],
-    );
     expect(
-      resolveMechanicalGeometryAnchor(scene, { objectId: "plate", anchor: "bottomRight" }),
+      resolveMechanicalGeometryAnchor(scene, {
+        objectId: "plate",
+        anchor: "center",
+      }),
+    ).toEqual([70, 50]);
+    expect(
+      resolveMechanicalGeometryAnchor(scene, {
+        objectId: "plate",
+        anchor: "bottomRight",
+      }),
     ).toEqual([120, 80]);
   });
 
   it("resolves image-like anchors when dimensions are available", () => {
     const scene = createMechanicalWorkflowDocument();
     expect(
-      resolveMechanicalGeometryAnchor(scene, { objectId: "photo-ref", anchor: "topLeft" }),
+      resolveMechanicalGeometryAnchor(scene, {
+        objectId: "photo-ref",
+        anchor: "topLeft",
+      }),
     ).toEqual([140, 20]);
   });
 
   it("returns undefined for unsupported anchors without crashing", () => {
     const scene = createMechanicalWorkflowDocument();
     expect(
-      resolveMechanicalGeometryAnchor(scene, { objectId: "plate", anchor: "start" }),
+      resolveMechanicalGeometryAnchor(scene, {
+        objectId: "plate",
+        anchor: "start",
+      }),
     ).toBeUndefined();
   });
 

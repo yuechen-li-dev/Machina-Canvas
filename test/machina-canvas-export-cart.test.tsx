@@ -69,7 +69,12 @@ function createSketchDocument(): CanvasDocument {
     unit: "px",
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
-      { id: "foreground", name: "Foreground", visible: true, objectIds: [image.id, overlay.id] },
+      {
+        id: "foreground",
+        name: "Foreground",
+        visible: true,
+        objectIds: [image.id, overlay.id],
+      },
     ],
     objects: {
       [image.id]: image,
@@ -122,7 +127,12 @@ function createGuideDocument(): CanvasDocument {
     unit: "px",
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
-      { id: "foreground", name: "Foreground", visible: true, objectIds: [image.id, guide.id] },
+      {
+        id: "foreground",
+        name: "Foreground",
+        visible: true,
+        objectIds: [image.id, guide.id],
+      },
     ],
     objects: {
       [image.id]: image,
@@ -134,7 +144,9 @@ function createGuideDocument(): CanvasDocument {
 
 describe("MachinaCanvas export cart", () => {
   it("collects always-available artifacts", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createSketchDocument() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createSketchDocument(),
+    });
     expect(artifacts.map((artifact) => artifact.id)).toEqual(
       expect.arrayContaining([
         "document-json",
@@ -157,12 +169,16 @@ describe("MachinaCanvas export cart", () => {
   });
 
   it("collects sketch TOML artifacts when sketch overlays exist", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createSketchDocument() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createSketchDocument(),
+    });
     expect(artifacts.some((artifact) => artifact.kind === "sketchToml")).toBe(true);
   });
 
   it("collects guide TOML artifacts for guide sidecars", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createGuideDocument() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createGuideDocument(),
+    });
     expect(artifacts.some((artifact) => artifact.kind === "guideToml")).toBe(true);
     expect(artifacts.find((artifact) => artifact.kind === "guideToml")?.description).toContain(
       "Authoring guide IR",
@@ -170,13 +186,19 @@ describe("MachinaCanvas export cart", () => {
   });
 
   it("collects TSX lowering artifacts for web/ui scenes", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createWebUiDemoScene() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createWebUiDemoScene(),
+    });
     expect(artifacts.some((artifact) => artifact.filename === "generated-page.tsx")).toBe(true);
   });
 
   it("keeps artifact ids and filenames stable", () => {
-    const first = collectCanvasExportArtifacts({ scene: createSpriteSheetScene() });
-    const second = collectCanvasExportArtifacts({ scene: createSpriteSheetScene() });
+    const first = collectCanvasExportArtifacts({
+      scene: createSpriteSheetScene(),
+    });
+    const second = collectCanvasExportArtifacts({
+      scene: createSpriteSheetScene(),
+    });
     expect(first.map((artifact) => artifact.id)).toEqual(second.map((artifact) => artifact.id));
     expect(first.map((artifact) => artifact.filename)).toEqual(
       second.map((artifact) => artifact.filename),
@@ -184,7 +206,9 @@ describe("MachinaCanvas export cart", () => {
   });
 
   it("applies sprite handoff preset deterministically", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createSpriteSheetScene() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createSpriteSheetScene(),
+    });
     const preset = CANVAS_EXPORT_PRESETS.find((candidate) => candidate.id === "sprite-handoff");
     const first = applyExportPreset(artifacts, preset!);
     const second = applyExportPreset(artifacts, preset!);
@@ -198,7 +222,9 @@ describe("MachinaCanvas export cart", () => {
   });
 
   it("applies visual review, full archive, and source checkpoint presets", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createSpriteSheetScene() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createSpriteSheetScene(),
+    });
     const visual = applyExportPreset(
       artifacts,
       CANVAS_EXPORT_PRESETS.find((candidate) => candidate.id === "visual-review")!,
@@ -221,7 +247,9 @@ describe("MachinaCanvas export cart", () => {
   });
 
   it("keeps guide sidecars out of sprite handoff but includes them in full archive", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createGuideDocument() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createGuideDocument(),
+    });
     const spriteHandoff = applyExportPreset(
       artifacts,
       CANVAS_EXPORT_PRESETS.find((candidate) => candidate.id === "sprite-handoff")!,
@@ -303,7 +331,11 @@ describe("MachinaCanvas export cart", () => {
       },
     ] as const;
     const cart = createExportCart(artifacts);
-    const result = await materializeExportCart({ artifacts, cart, activeModeId: "graphics" });
+    const result = await materializeExportCart({
+      artifacts,
+      cart,
+      activeModeId: "graphics",
+    });
     expect(result.kind).toBe("ok");
     if (result.kind !== "ok") return;
     expect(result.entries.map((entry) => entry.filename)).toEqual(

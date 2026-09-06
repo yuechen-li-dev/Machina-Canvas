@@ -637,7 +637,14 @@ export function createMechanicalDraftingScene(): CanvasDocument {
     unit: "mm",
     unitSystem: createCanvasUnitSystem("mm"),
     coordinateProfileId: DRAFTING_COORDINATES.id,
-    layers: [{ id: "geometry", name: "Geometry", visible: true, objectIds: [plate.id, hole.id] }],
+    layers: [
+      {
+        id: "geometry",
+        name: "Geometry",
+        visible: true,
+        objectIds: [plate.id, hole.id],
+      },
+    ],
     objects: { [plate.id]: plate, [hole.id]: hole },
   };
   const annotations = createMechanicalAnnotationSet({
@@ -743,7 +750,12 @@ export function createMechanicalDraftingScene(): CanvasDocument {
         columns: ["Item", "Part", "Qty", "Material"],
         rows: [
           { Item: "1", Part: "Base plate", Qty: "1", Material: "Mild steel" },
-          { Item: "2", Part: "Mounting hole", Qty: "1", Material: "Drill to size" },
+          {
+            Item: "2",
+            Part: "Mounting hole",
+            Qty: "1",
+            Material: "Drill to size",
+          },
         ],
       },
     ],

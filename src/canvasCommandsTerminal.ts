@@ -156,7 +156,9 @@ export function executeCanvasTerminalCommand(
     }
 
     if (commandName === "summary") {
-      return { logEntry: makeLog("info", summarizeScene(context.document), trimmed) };
+      return {
+        logEntry: makeLog("info", summarizeScene(context.document), trimmed),
+      };
     }
 
     if (commandName === "select") {

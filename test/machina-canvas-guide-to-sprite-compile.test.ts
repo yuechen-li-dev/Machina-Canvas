@@ -302,7 +302,9 @@ describe("MachinaCanvas guide-to-sprite compile", () => {
 
   it("keeps authoring export behavior for legacy cut grids", () => {
     const sidecar = createSidecar();
-    const authoringToml = serializeCanvasSpriteToml(sidecar, { mode: "authoring" });
+    const authoringToml = serializeCanvasSpriteToml(sidecar, {
+      mode: "authoring",
+    });
     expect(authoringToml).toContain("[cut_grids.legacy]");
   });
 

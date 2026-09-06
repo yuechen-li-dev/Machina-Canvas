@@ -232,7 +232,11 @@ export function loadBlockoutSidecarFromToml(source: string): CanvasBlockoutSidec
 export function attachSpriteSidecarToImage(
   image: ImageObject,
   spriteSidecar: SpriteSidecar,
-  options?: { readonly id?: string; readonly name?: string; readonly layerId?: string },
+  options?: {
+    readonly id?: string;
+    readonly name?: string;
+    readonly layerId?: string;
+  },
 ): SpriteSidecarObject {
   const sidecar = createSpriteSidecarObject(image, spriteSidecar);
   return {
@@ -251,7 +255,11 @@ export function attachSpriteSidecarToImage(
 export function attachGuideSidecarToImage(
   image: ImageObject,
   guideSidecar: CanvasGuideSidecar,
-  options?: { readonly id?: string; readonly name?: string; readonly layerId?: string },
+  options?: {
+    readonly id?: string;
+    readonly name?: string;
+    readonly layerId?: string;
+  },
 ) {
   return createGuideSidecarObject(image, guideSidecar, options);
 }
@@ -259,7 +267,11 @@ export function attachGuideSidecarToImage(
 export function attachBlockoutToImage(
   image: ImageObject,
   blockoutSidecar: CanvasBlockoutSidecar,
-  options?: { readonly id?: string; readonly name?: string; readonly layerId?: string },
+  options?: {
+    readonly id?: string;
+    readonly name?: string;
+    readonly layerId?: string;
+  },
 ) {
   return createBlockoutSidecarObject(image, blockoutSidecar, options);
 }

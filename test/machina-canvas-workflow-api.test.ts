@@ -144,8 +144,16 @@ describe("MachinaCanvas workflow API", () => {
     ctx.artifact("auditReport", "out/audit.md", "Audit markdown");
 
     expect(ctx.artifacts).toEqual([
-      { kind: "spriteToml", path: "out/runtime.sprite.toml", description: undefined },
-      { kind: "auditReport", path: "out/audit.md", description: "Audit markdown" },
+      {
+        kind: "spriteToml",
+        path: "out/runtime.sprite.toml",
+        description: undefined,
+      },
+      {
+        kind: "auditReport",
+        path: "out/audit.md",
+        description: "Audit markdown",
+      },
     ]);
   });
 
@@ -217,7 +225,13 @@ describe("MachinaCanvas workflow API", () => {
       kind: "canvasWorkflowManifest",
       workflow: "fixture",
       createdAt: "2026-07-07T12:34:56.000Z",
-      artifacts: [{ kind: "spriteToml", path: "out/runtime.sprite.toml", description: undefined }],
+      artifacts: [
+        {
+          kind: "spriteToml",
+          path: "out/runtime.sprite.toml",
+          description: undefined,
+        },
+      ],
       logs: [{ level: "info", message: "compiled", at: "2026-07-07T12:34:56.000Z" }],
     });
   });

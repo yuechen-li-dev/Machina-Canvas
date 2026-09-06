@@ -93,7 +93,10 @@ function createGuideRegionDocument() {
   });
   const guide = parseGuideSidecarToml(guideToml);
   const sidecar = createSpriteSidecarObject(image, spec);
-  const guideObject = createGuideSidecarObject(image, { ...guide, rawToml: undefined });
+  const guideObject = createGuideSidecarObject(image, {
+    ...guide,
+    rawToml: undefined,
+  });
   return applyCanvasCommands(base, [
     { kind: "addSpriteSidecarObject", object: sidecar, attach: true },
     { kind: "addGuideSidecarObject", object: guideObject, attach: true },
@@ -118,7 +121,12 @@ describe("MachinaCanvas guide-region sprite editing", () => {
 
     expect(context?.relation).toBe("contains");
     expect(context?.regionId).toBe("inner");
-    expect(context?.deltaToRegion).toEqual({ left: 0, top: 0, right: 4, bottom: 4 });
+    expect(context?.deltaToRegion).toEqual({
+      left: 0,
+      top: 0,
+      right: 4,
+      bottom: 4,
+    });
   });
 
   it("chooses the largest intersecting region when none fully contain", () => {
@@ -146,7 +154,14 @@ describe("MachinaCanvas guide-region sprite editing", () => {
         height: 256,
         unit: "px",
         unitSystem: createCanvasUnitSystem("px"),
-        layers: [{ id: "sprites", name: "Sprites", visible: true, objectIds: [image.id] }],
+        layers: [
+          {
+            id: "sprites",
+            name: "Sprites",
+            visible: true,
+            objectIds: [image.id],
+          },
+        ],
         objects: { [image.id]: image },
         selectedObjectId: image.id,
       },
@@ -235,7 +250,14 @@ describe("MachinaCanvas guide-region sprite editing", () => {
         height: 256,
         unit: "px",
         unitSystem: createCanvasUnitSystem("px"),
-        layers: [{ id: "sprites", name: "Sprites", visible: true, objectIds: [image.id] }],
+        layers: [
+          {
+            id: "sprites",
+            name: "Sprites",
+            visible: true,
+            objectIds: [image.id],
+          },
+        ],
         objects: { [image.id]: image },
         selectedObjectId: image.id,
       },
@@ -255,7 +277,11 @@ describe("MachinaCanvas guide-region sprite editing", () => {
       ],
     ).document;
     const result = applyCanvasCommands(noGuideDocument, [
-      { kind: "clampSpriteFrameToGuideRegion", sidecarId: "sheet-sidecar", frameId: "hero.idle" },
+      {
+        kind: "clampSpriteFrameToGuideRegion",
+        sidecarId: "sheet-sidecar",
+        frameId: "hero.idle",
+      },
     ]);
     expect(result.results[0]?.message).toContain("No guide region found");
   });

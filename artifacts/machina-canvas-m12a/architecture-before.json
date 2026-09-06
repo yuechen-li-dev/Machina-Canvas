@@ -1,0 +1,23 @@
+{
+  "milestone": "MACHINA-CANVAS-MODULAR-CORE-M12A",
+  "capturedFrom": "HEAD be7c49b",
+  "files": {
+    "src/App.tsx": { "lines": 6836, "bytes": 239793 },
+    "src/sceneCommands.ts": { "lines": 3987, "bytes": 125995 },
+    "src/canvasExport.ts": { "lines": 2052, "bytes": 77240 },
+    "src/sceneModel.ts": { "lines": 412, "bytes": 8793 }
+  },
+  "shape": "flat src directory with React, commands, exports, scene records, and capability implementations mixed at one level",
+  "highFanIn": {
+    "sceneModel": 90,
+    "canvasExport": 46,
+    "sceneCommands": 30
+  },
+  "duplicatedDispatch": [
+    "command validation switch",
+    "command apply chain",
+    "command TOML serialization switch",
+    "object React renderer chain",
+    "object SVG renderer chain"
+  ]
+}

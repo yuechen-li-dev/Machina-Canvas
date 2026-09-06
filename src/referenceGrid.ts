@@ -146,7 +146,10 @@ function subcellFromLocal(localX: number, localY: number): GridSubcell {
   return `${yBand}${xBand}` as GridSubcell;
 }
 
-function localFromSubcell(subcell: GridSubcell): { localX: number; localY: number } {
+function localFromSubcell(subcell: GridSubcell): {
+  localX: number;
+  localY: number;
+} {
   switch (subcell) {
     case "nw":
       return { localX: 0, localY: 0 };

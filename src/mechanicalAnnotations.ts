@@ -521,12 +521,22 @@ export function getMechanicalTableRenderMetrics(
 function getMechanicalBlockBounds(
   annotations: MechanicalAnnotationSet,
   block: MechanicalBlockAnnotation,
-): { readonly x: number; readonly y: number; readonly width: number; readonly height: number } {
+): {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+} {
   if (block.kind === "titleBlock") {
     return { x: block.x, y: block.y, width: block.width, height: block.height };
   }
   const metrics = getMechanicalTableRenderMetrics(annotations, block);
-  return { x: block.x, y: block.y, width: metrics.width, height: metrics.height };
+  return {
+    x: block.x,
+    y: block.y,
+    width: metrics.width,
+    height: metrics.height,
+  };
 }
 
 export function resolveMechanicalGeometryAnchor(
@@ -1315,7 +1325,9 @@ function renderLinearDimension(
       : 0;
   renderLeader(dimension.from, start, lines, "canvas-mechanical-extension");
   renderLeader(dimension.to, end, lines, "canvas-mechanical-extension");
-  renderLeader(start, end, lines, "canvas-mechanical-dimension", { arrows: "both" });
+  renderLeader(start, end, lines, "canvas-mechanical-dimension", {
+    arrows: "both",
+  });
   renderDimensionLabel(
     formatMechanicalDimensionText(dimension, defaultUnits),
     [labelX, labelY],
@@ -1382,7 +1394,9 @@ function renderCircularDimension(
   ] as const;
   const labelOffset = dimension.labelOffset ?? ([radial[0] >= 0 ? 3 : -3, -2] as const);
   const label = [leaderEnd[0] + labelOffset[0], leaderEnd[1] + labelOffset[1]] as const;
-  renderLeader(leaderEnd, anchor, lines, "canvas-mechanical-dimension", { arrows: "end" });
+  renderLeader(leaderEnd, anchor, lines, "canvas-mechanical-dimension", {
+    arrows: "end",
+  });
   if (dimension.showCenterMark ?? dimension.kind === "diameter") {
     lines.push(
       `<circle class="canvas-mechanical-center-mark" cx="${dimension.center[0]}" cy="${dimension.center[1]}" r="1.1" fill="#253043" stroke="none" />`,

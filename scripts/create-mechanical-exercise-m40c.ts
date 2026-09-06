@@ -17,8 +17,8 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "app", "artifacts");
+const repoRoot = resolve(__dirname, "..");
+const artifactsDir = join(repoRoot, "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
@@ -614,21 +614,37 @@ function createGuideSpec(): CanvasGuideSidecar {
       description: region.label,
     })),
     datums: [
-      { id: "datum-vertical-centerline", kind: "vertical", x: centers.main[0], label: "Main CL" },
+      {
+        id: "datum-vertical-centerline",
+        kind: "vertical",
+        x: centers.main[0],
+        label: "Main CL",
+      },
       {
         id: "datum-main-horizontal",
         kind: "horizontal",
         y: centers.main[1],
         label: "Main bore datum",
       },
-      { id: "datum-top-horizontal", kind: "horizontal", y: centers.top[1], label: "Top datum" },
+      {
+        id: "datum-top-horizontal",
+        kind: "horizontal",
+        y: centers.top[1],
+        label: "Top datum",
+      },
       {
         id: "datum-right-horizontal",
         kind: "horizontal",
         y: centers.right[1],
         label: "Right boss datum",
       },
-      { id: "datum-top-center", kind: "point", x: centers.top[0], y: centers.top[1], label: "Top" },
+      {
+        id: "datum-top-center",
+        kind: "point",
+        x: centers.top[0],
+        y: centers.top[1],
+        label: "Top",
+      },
       {
         id: "datum-main-center",
         kind: "point",
@@ -680,11 +696,27 @@ function createGuideSpec(): CanvasGuideSidecar {
         to: centers.right,
         label: "38",
       },
-      { id: "guide-main-outer", kind: "diameter", center: centers.main, label: "Ø88" },
-      { id: "guide-main-inner", kind: "diameter", center: centers.main, label: "Ø56" },
+      {
+        id: "guide-main-outer",
+        kind: "diameter",
+        center: centers.main,
+        label: "Ø88",
+      },
+      {
+        id: "guide-main-inner",
+        kind: "diameter",
+        center: centers.main,
+        label: "Ø56",
+      },
     ],
     alignmentMarks: [
-      { id: "mark-top", kind: "point", x: centers.top[0], y: centers.top[1], label: "Top center" },
+      {
+        id: "mark-top",
+        kind: "point",
+        x: centers.top[0],
+        y: centers.top[1],
+        label: "Top center",
+      },
       {
         id: "mark-main",
         kind: "point",
@@ -728,8 +760,20 @@ function createBlockoutSpec(): CanvasBlockoutSidecar {
       label: box.label,
     })),
     points: [
-      { id: "top-center", kind: "center", x: centers.top[0], y: centers.top[1], label: "Top" },
-      { id: "main-center", kind: "center", x: centers.main[0], y: centers.main[1], label: "Main" },
+      {
+        id: "top-center",
+        kind: "center",
+        x: centers.top[0],
+        y: centers.top[1],
+        label: "Top",
+      },
+      {
+        id: "main-center",
+        kind: "center",
+        x: centers.main[0],
+        y: centers.main[1],
+        label: "Main",
+      },
       {
         id: "right-center",
         kind: "center",
@@ -737,7 +781,13 @@ function createBlockoutSpec(): CanvasBlockoutSidecar {
         y: centers.right[1],
         label: "Right",
       },
-      { id: "slot-center", kind: "center", x: centers.slot[0], y: centers.slot[1], label: "Slot" },
+      {
+        id: "slot-center",
+        kind: "center",
+        x: centers.slot[0],
+        y: centers.slot[1],
+        label: "Slot",
+      },
     ],
     curves: [
       {

@@ -44,10 +44,10 @@ export function CanvasCommandTerminal({
                 No terminal commands yet. Run `help` for the current editor command list.
               </p>
             ) : (
-              recentLog.map((entry, index) => (
+              recentLog.map((entry) => (
                 <article
                   className={`terminal-entry terminal-entry-${entry.kind}`}
-                  key={`${entry.at}-${index}`}
+                  key={`${entry.at}-${entry.kind}-${entry.command ?? entry.message}`}
                 >
                   {entry.command ? (
                     <p className="terminal-entry__command">&gt; {entry.command}</p>

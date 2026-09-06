@@ -50,7 +50,11 @@ export function hitTestSpriteFrameAtPoint(
   point: { x: number; y: number },
 ): SpriteFrameHit | undefined {
   const hits = getVisibleFrames(sidecar)
-    .map((frame) => ({ frameId: frame.id, frame, rect: mapSpriteFrameToCanvasRect(image, frame) }))
+    .map((frame) => ({
+      frameId: frame.id,
+      frame,
+      rect: mapSpriteFrameToCanvasRect(image, frame),
+    }))
     .filter((hit) => containsPoint(hit.rect, point));
 
   if (hits.length === 0) return undefined;

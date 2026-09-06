@@ -43,8 +43,18 @@ function createDocument(): CanvasDocument {
     unit: "mm",
     unitSystem: createCanvasUnitSystem("mm"),
     layers: [
-      { id: "geometry", name: "Geometry", visible: true, objectIds: [plate.id] },
-      { id: "annotations", name: "Mechanical Drafting", visible: true, objectIds: [] },
+      {
+        id: "geometry",
+        name: "Geometry",
+        visible: true,
+        objectIds: [plate.id],
+      },
+      {
+        id: "annotations",
+        name: "Mechanical Drafting",
+        visible: true,
+        objectIds: [],
+      },
     ],
     layerGroups: [{ id: "mechanical", title: "Mechanical Drafting", objectIds: [plate.id] }],
     objects: { [plate.id]: plate },
@@ -140,7 +150,10 @@ function createSidecar() {
 
 describe("MachinaCanvas mechanical annotations", () => {
   it("creates a mechanical annotation set", () => {
-    const annotations = createMechanicalAnnotationSet({ id: "test-set", units: "mm" });
+    const annotations = createMechanicalAnnotationSet({
+      id: "test-set",
+      units: "mm",
+    });
     expect(annotations.kind).toBe("mechanicalAnnotationSet");
     expect(annotations.units).toBe("mm");
   });
@@ -155,7 +168,14 @@ describe("MachinaCanvas mechanical annotations", () => {
       id: "dupes",
       units: "mm",
       dimensions: [
-        { id: "dup", kind: "linear", axis: "horizontal", from: [0, 0], to: [10, 0], label: "10" },
+        {
+          id: "dup",
+          kind: "linear",
+          axis: "horizontal",
+          from: [0, 0],
+          to: [10, 0],
+          label: "10",
+        },
       ],
       notes: [{ id: "dup", kind: "note", at: [0, 0], text: "duplicate" }],
     });
@@ -167,7 +187,10 @@ describe("MachinaCanvas mechanical annotations", () => {
   });
 
   it("rejects invalid units", () => {
-    const annotations = { ...createMechanicalAnnotationSet(), units: "pt" as never };
+    const annotations = {
+      ...createMechanicalAnnotationSet(),
+      units: "pt" as never,
+    };
     expect(
       validateMechanicalAnnotations(annotations).some(
         (item) => item.code === "InvalidMechanicalUnits",

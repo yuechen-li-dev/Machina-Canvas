@@ -701,7 +701,10 @@ export function collectCanvasExportArtifacts(input: {
       filename: "generated-page.tsx",
       selectedByDefault: false,
       group: "webUi",
-      create: () => lowerCanvasDocumentToTsx(input.scene, { componentName: "GeneratedPage" }).text,
+      create: () =>
+        lowerCanvasDocumentToTsx(input.scene, {
+          componentName: "GeneratedPage",
+        }).text,
     });
   }
 

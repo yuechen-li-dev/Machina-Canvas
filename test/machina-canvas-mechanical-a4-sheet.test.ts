@@ -78,7 +78,9 @@ describe("MachinaCanvas mechanical A4 sheet", () => {
   });
 
   it("labels export-cart artifacts as A4 mechanical review/source outputs when appropriate", () => {
-    const artifacts = collectCanvasExportArtifacts({ scene: createMechanicalDraftingScene() });
+    const artifacts = collectCanvasExportArtifacts({
+      scene: createMechanicalDraftingScene(),
+    });
     expect(artifacts.find((artifact) => artifact.id === "render-svg")?.title).toBe(
       "A4 mechanical visual review",
     );

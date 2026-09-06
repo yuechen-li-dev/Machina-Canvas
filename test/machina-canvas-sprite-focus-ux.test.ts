@@ -80,7 +80,12 @@ function createDocument() {
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
       { id: "sprites", name: "Sprites", visible: true, objectIds: [image.id] },
-      { id: "sprite-overlays", name: "Sprite Overlays", visible: true, objectIds: [] },
+      {
+        id: "sprite-overlays",
+        name: "Sprite Overlays",
+        visible: true,
+        objectIds: [],
+      },
     ],
     objects: { [image.id]: image },
     selectedObjectId: image.id,
@@ -94,7 +99,11 @@ function createDocument() {
   return applyCanvasCommands(document, [
     { kind: "addSpriteSidecarObject", object: sidecar, attach: true },
     { kind: "select", id: sidecar.id },
-    { kind: "selectSpriteFrame", sidecarId: sidecar.id, frameId: "maya.down.idle_exact" },
+    {
+      kind: "selectSpriteFrame",
+      sidecarId: sidecar.id,
+      frameId: "maya.down.idle_exact",
+    },
   ]).document;
 }
 
@@ -132,7 +141,9 @@ describe("MachinaCanvas sprite focus UX", () => {
     const sidecar = getSidecar(createDocument());
     const hovered = sidecar.spec.frames.find((frame) => frame.id === "maya.left.0");
     if (!hovered) throw new Error("Expected hovered frame.");
-    const plan = createSpriteOverlayRenderPlan(sidecar, { hoveredFrameId: hovered.id });
+    const plan = createSpriteOverlayRenderPlan(sidecar, {
+      hoveredFrameId: hovered.id,
+    });
 
     expect(shouldRenderSpriteFrameLabel(hovered, plan)).toBe(true);
     expect(plan.framePresentations.get(hovered.id)?.emphasis).toBe("hovered");

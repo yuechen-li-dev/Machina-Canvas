@@ -34,25 +34,46 @@ type TinyTownArtifacts = {
 type OverlayPayload = {
   imagePath: string;
   outputPath: string;
-  guideRegions: Array<{ id: string; x: number; y: number; width: number; height: number }>;
-  stackFrames: Array<{ id: string; x: number; y: number; width: number; height: number }>;
-  explicitFrames: Array<{ id: string; x: number; y: number; width: number; height: number }>;
+  guideRegions: Array<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  stackFrames: Array<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  explicitFrames: Array<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
   highlightFrameId?: string;
 };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "app", "artifacts");
+const repoRoot = resolve(__dirname, "..");
+const artifactsDir = join(repoRoot, "artifacts");
 const dominatusSpritesDir =
   "C:\\Users\\yuech\\source\\repos\\Dominatus\\samples\\Dominatus.GodotTinyTown\\assets\\sprites";
 const sourceImagePath = join(dominatusSpritesDir, "tinytown_sprite_alpha.png");
-const sourceSpriteTomlPath = join(dominatusSpritesDir, "tinytown_sprite_alpha.sprite.toml");
-const sourceSpriteforgeTomlPath = join(
+const sourceSpriteTomlPath = join(
   dominatusSpritesDir,
-  "tinytown_sprite_alpha.spriteforge.toml",
+  "tinytown_sprite_alpha.compiled.sprite.toml",
 );
-const fixtureImagePath = join(repoRoot, "app", "public", "assets", "tinytown_sprite_alpha.png");
+const sourceSpriteforgeTomlPath = join(
+  artifactsDir,
+  "tinytown_sprite_alpha.corrected.spriteforge.toml",
+);
+const fixtureImagePath = join(repoRoot, "public", "assets", "tinytown_sprite_alpha.png");
 export const TINYTOWN_WORKFLOW_ARTIFACT_PATHS = {
   guideToml: join(artifactsDir, "tinytown_sprite_alpha.guide.toml"),
   runtimeToml: join(artifactsDir, "tinytown_sprite_alpha.compiled.sprite.toml"),
@@ -192,11 +213,31 @@ function createGuideSpec(image: ImageObject): CanvasGuideSidecar {
       },
     ],
     datums: [
-      { id: "face-split-left", kind: "vertical", x: 360, label: "left band split" },
-      { id: "face-split-right", kind: "vertical", x: 720, label: "right band split" },
-      { id: "face-split-up", kind: "vertical", x: 1080, label: "up band split" },
+      {
+        id: "face-split-left",
+        kind: "vertical",
+        x: 360,
+        label: "left band split",
+      },
+      {
+        id: "face-split-right",
+        kind: "vertical",
+        x: 720,
+        label: "right band split",
+      },
+      {
+        id: "face-split-up",
+        kind: "vertical",
+        x: 1080,
+        label: "up band split",
+      },
       { id: "prop-row-top", kind: "horizontal", y: 480, label: "props top" },
-      { id: "prop-row-bottom", kind: "horizontal", y: 600, label: "props bottom" },
+      {
+        id: "prop-row-bottom",
+        kind: "horizontal",
+        y: 600,
+        label: "props bottom",
+      },
     ],
     dimensions: [
       {
@@ -719,7 +760,9 @@ export function generateTinyTownSpriteArtifacts(): TinyTownArtifacts {
   );
 
   const runtimeSidecar = createSpriteSidecarObject(image, parsedRuntimeDraft);
-  const runtimeToml = serializeCanvasSpriteToml(runtimeSidecar, { mode: "runtime" });
+  const runtimeToml = serializeCanvasSpriteToml(runtimeSidecar, {
+    mode: "runtime",
+  });
   const reparsedRuntime = parseSpriteSidecarToml(runtimeToml, {
     id: "tinytown-compiled",
     name: "TinyTown compiled runtime",

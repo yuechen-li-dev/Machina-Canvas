@@ -155,7 +155,10 @@ function getOwnerImageForObject(
   return undefined;
 }
 
-function getLayerGroupSelection(document: CanvasDocument): { groupId?: string; imageId?: string } {
+function getLayerGroupSelection(document: CanvasDocument): {
+  groupId?: string;
+  imageId?: string;
+} {
   const selected = document.selectedObjectId
     ? document.objects[document.selectedObjectId]
     : undefined;
@@ -476,7 +479,10 @@ export function CanvasLayerPanel(props: LayerPanelProps) {
         ref={spriteInputRef}
         type="file"
         onChange={onInput((file) =>
-          onLoadSpriteToml(file, { groupId: selection.groupId, targetId: selection.imageId }),
+          onLoadSpriteToml(file, {
+            groupId: selection.groupId,
+            targetId: selection.imageId,
+          }),
         )}
       />
       <input
@@ -485,7 +491,10 @@ export function CanvasLayerPanel(props: LayerPanelProps) {
         ref={guideInputRef}
         type="file"
         onChange={onInput((file) =>
-          onLoadGuideToml(file, { groupId: selection.groupId, targetId: selection.imageId }),
+          onLoadGuideToml(file, {
+            groupId: selection.groupId,
+            targetId: selection.imageId,
+          }),
         )}
       />
       <input
@@ -506,7 +515,10 @@ export function CanvasLayerPanel(props: LayerPanelProps) {
         ref={sketchInputRef}
         type="file"
         onChange={onInput((file) =>
-          onLoadSketchToml(file, { groupId: selection.groupId, targetId: selection.imageId }),
+          onLoadSketchToml(file, {
+            groupId: selection.groupId,
+            targetId: selection.imageId,
+          }),
         )}
       />
       <input

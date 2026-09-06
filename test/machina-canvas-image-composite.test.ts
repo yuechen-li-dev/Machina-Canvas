@@ -256,17 +256,26 @@ describe("MachinaCanvas image alpha-map composition", () => {
       ...bundle,
       files: bundle.files.map((file) =>
         file.path === "render.svg"
-          ? { ...file, text: file.text.replaceAll("mask-source", "missing-mask") }
+          ? {
+              ...file,
+              text: file.text.replaceAll("mask-source", "missing-mask"),
+            }
           : file,
       ),
     };
 
     expect(validateCanvasExportBundle(bundle).ok).toBe(true);
     expect(validateCanvasExportBundle(invalidRelationBundle).diagnostics).toContainEqual(
-      expect.objectContaining({ severity: "error", code: "InvalidCompositeRelation" }),
+      expect.objectContaining({
+        severity: "error",
+        code: "InvalidCompositeRelation",
+      }),
     );
     expect(validateCanvasExportBundle(missingMaskBundle).diagnostics).toContainEqual(
-      expect.objectContaining({ severity: "warning", code: "MissingCompositeMask" }),
+      expect.objectContaining({
+        severity: "warning",
+        code: "MissingCompositeMask",
+      }),
     );
   });
 

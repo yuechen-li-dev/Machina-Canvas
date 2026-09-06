@@ -165,10 +165,20 @@ const catalog = defineCanvasUiComponentCatalog([
     id: "Button",
     label: "Button",
     description: "Presentational call-to-action button.",
-    defaultProps: { children: "Start building", variant: "primary", size: "md", disabled: false },
+    defaultProps: {
+      children: "Start building",
+      variant: "primary",
+      size: "md",
+      disabled: false,
+    },
     propSchema: [
       { name: "children", label: "Children", kind: "string" },
-      { name: "variant", label: "Variant", kind: "enum", options: buttonVariants },
+      {
+        name: "variant",
+        label: "Variant",
+        kind: "enum",
+        options: buttonVariants,
+      },
       { name: "size", label: "Size", kind: "enum", options: buttonSizes },
       { name: "disabled", label: "Disabled", kind: "boolean" },
     ],
@@ -196,7 +206,11 @@ const catalog = defineCanvasUiComponentCatalog([
     id: "Input",
     label: "Input",
     description: "Read-only field preview for generated form shells.",
-    defaultProps: { label: "Email", placeholder: "you@example.com", disabled: false },
+    defaultProps: {
+      label: "Email",
+      placeholder: "you@example.com",
+      disabled: false,
+    },
     propSchema: [
       { name: "label", label: "Label", kind: "string" },
       { name: "placeholder", label: "Placeholder", kind: "string" },

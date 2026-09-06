@@ -15,8 +15,8 @@ import type { CanvasDocument, ImageObject } from "../src/sceneModel";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "app", "artifacts");
+const repoRoot = resolve(__dirname, "..");
+const artifactsDir = join(repoRoot, "artifacts");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
 export const GUIDE_OVERLAY_FIXTURE_IDS = {

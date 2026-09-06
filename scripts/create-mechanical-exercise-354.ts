@@ -15,8 +15,8 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "app", "artifacts");
+const repoRoot = resolve(__dirname, "..");
+const artifactsDir = join(repoRoot, "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 const uploadedReferencePaths = [

@@ -89,11 +89,19 @@ describe("MachinaCanvas arc orientation regression", () => {
 
   it("three-point arcs support left and right through points", () => {
     expectArcMidpoint(
-      createArcFromThreePoints({ start: [0, -10], through: [-10, 0], end: [0, 10] }),
+      createArcFromThreePoints({
+        start: [0, -10],
+        through: [-10, 0],
+        end: [0, 10],
+      }),
       [-10, 0],
     );
     expectArcMidpoint(
-      createArcFromThreePoints({ start: [0, -10], through: [10, 0], end: [0, 10] }),
+      createArcFromThreePoints({
+        start: [0, -10],
+        through: [10, 0],
+        end: [0, 10],
+      }),
       [10, 0],
     );
   });

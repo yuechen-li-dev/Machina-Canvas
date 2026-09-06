@@ -218,7 +218,11 @@ describe("MachinaCanvas viewport", () => {
   });
 
   it("finds visible objects intersecting the viewport", () => {
-    const viewport = createCanvasViewport(document, { zoom: 4, centerX: 160, centerY: 142 });
+    const viewport = createCanvasViewport(document, {
+      zoom: 4,
+      centerX: 160,
+      centerY: 142,
+    });
     const objects = getObjectsInViewport(document, viewport).map((object) => object.id);
 
     expect(objects).toContain("headline");
@@ -226,7 +230,11 @@ describe("MachinaCanvas viewport", () => {
   });
 
   it("respects hidden objects and layers", () => {
-    const viewport = createCanvasViewport(document, { zoom: 4, centerX: 280, centerY: 200 });
+    const viewport = createCanvasViewport(document, {
+      zoom: 4,
+      centerX: 280,
+      centerY: 200,
+    });
     const objects = getObjectsInViewport(document, viewport).map((object) => object.id);
 
     expect(objects).not.toContain("hidden-object");

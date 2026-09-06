@@ -22,8 +22,18 @@ function createPanelDocument(): CanvasDocument {
     unit: "px",
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
-      { id: "sheet", name: "Sprite Sheet", visible: true, objectIds: ["sheet-image", "alpha"] },
-      { id: "overlays", name: "Overlays", visible: true, objectIds: ["sidecar", "orphan-sidecar"] },
+      {
+        id: "sheet",
+        name: "Sprite Sheet",
+        visible: true,
+        objectIds: ["sheet-image", "alpha"],
+      },
+      {
+        id: "overlays",
+        name: "Overlays",
+        visible: true,
+        objectIds: ["sidecar", "orphan-sidecar"],
+      },
     ],
     layerGroups: [{ id: "sheet-group", title: "Sprite Sheet", objectIds: ["sheet-image"] }],
     objects: {
@@ -205,10 +215,14 @@ describe("MachinaCanvas layer panel", () => {
       screen.getByRole("menuitem", { name: /^ImageAdd a source image$/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("menuitem", { name: /^Blockout TOMLAttach blockout feature IR$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Blockout TOMLAttach blockout feature IR$/i,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("menuitem", { name: /^Guide TOMLAttach authoring guide IR$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Guide TOMLAttach authoring guide IR$/i,
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("menuitem", {
@@ -216,13 +230,19 @@ describe("MachinaCanvas layer panel", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("menuitem", { name: /^Sprite TOMLAttach sprite metadata$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Sprite TOMLAttach sprite metadata$/i,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("menuitem", { name: /^Sketch TOMLAttach sketch overlay$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Sketch TOMLAttach sketch overlay$/i,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("menuitem", { name: /^Alpha maskAttach alpha mask to image$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Alpha maskAttach alpha mask to image$/i,
+      }),
     ).toBeInTheDocument();
   });
 
@@ -248,18 +268,28 @@ describe("MachinaCanvas layer panel", () => {
     renderLayerPanel({ onAddAlphaMask, onAddSketchToml, onAddSpriteToml });
 
     fireEvent.click(screen.getByRole("button", { name: "+ Add" }));
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Sprite TOMLAttach sprite metadata$/i }));
+    fireEvent.click(
+      screen.getByRole("menuitem", {
+        name: /^Sprite TOMLAttach sprite metadata$/i,
+      }),
+    );
     expect(onAddSpriteToml).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "+ Add" }));
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Sketch TOMLAttach sketch overlay$/i }));
+    fireEvent.click(
+      screen.getByRole("menuitem", {
+        name: /^Sketch TOMLAttach sketch overlay$/i,
+      }),
+    );
     expect(onAddSketchToml).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "+ Add" }));
     fireEvent.click(
-      screen.getByRole("menuitem", { name: /^Alpha maskAttach alpha mask to image$/i }),
+      screen.getByRole("menuitem", {
+        name: /^Alpha maskAttach alpha mask to image$/i,
+      }),
     );
     expect(onAddAlphaMask).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
@@ -271,7 +301,9 @@ describe("MachinaCanvas layer panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "+ Add" }));
     expect(screen.getByRole("menu")).toBeInTheDocument();
 
-    fireEvent.keyDown(screen.getByRole("button", { name: "+ Add" }), { key: "Escape" });
+    fireEvent.keyDown(screen.getByRole("button", { name: "+ Add" }), {
+      key: "Escape",
+    });
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 });

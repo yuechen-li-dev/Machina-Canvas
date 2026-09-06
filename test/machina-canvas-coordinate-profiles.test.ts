@@ -26,7 +26,11 @@ function selectFirstSpriteFrame(document: CanvasDocument): CanvasDocument {
   const sidecar = getSpriteSidecar(document);
   return applyCanvasCommands(document, [
     { kind: "select", id: sidecar.id },
-    { kind: "selectSpriteFrame", sidecarId: sidecar.id, frameId: sidecar.spec.frames[0].id },
+    {
+      kind: "selectSpriteFrame",
+      sidecarId: sidecar.id,
+      frameId: sidecar.spec.frames[0].id,
+    },
   ]).document;
 }
 
@@ -41,11 +45,19 @@ function getSelectedFrameY(document: CanvasDocument): number {
 
 describe("MachinaCanvas coordinate profiles", () => {
   it("defines screen coordinates as y-down from top-left", () => {
-    expect(SCREEN_COORDINATES).toMatchObject({ id: "screen", yAxis: "down", origin: "topLeft" });
+    expect(SCREEN_COORDINATES).toMatchObject({
+      id: "screen",
+      yAxis: "down",
+      origin: "topLeft",
+    });
   });
 
   it("defines image coordinates as y-down from image top-left", () => {
-    expect(IMAGE_COORDINATES).toMatchObject({ id: "image", yAxis: "down", origin: "imageTopLeft" });
+    expect(IMAGE_COORDINATES).toMatchObject({
+      id: "image",
+      yAxis: "down",
+      origin: "imageTopLeft",
+    });
   });
 
   it("defines drafting coordinates as y-up from bottom-left", () => {
@@ -95,13 +107,21 @@ describe("MachinaCanvas coordinate profiles", () => {
 
   it("returns a visually upward delta for y-down profiles", () => {
     expect(
-      visualDirectionDelta({ direction: "up", amount: 4, profile: IMAGE_COORDINATES }),
+      visualDirectionDelta({
+        direction: "up",
+        amount: 4,
+        profile: IMAGE_COORDINATES,
+      }),
     ).toEqual([0, -4]);
   });
 
   it("returns a visually upward authoring-space delta for y-up profiles", () => {
     expect(
-      visualDirectionDelta({ direction: "up", amount: 4, profile: DRAFTING_COORDINATES }),
+      visualDirectionDelta({
+        direction: "up",
+        amount: 4,
+        profile: DRAFTING_COORDINATES,
+      }),
     ).toEqual([0, 4]);
   });
 
@@ -127,7 +147,13 @@ describe("MachinaCanvas coordinate profiles", () => {
       profile: getCoordinateProfile(document.coordinateProfileId),
     });
     const next = applyCanvasCommands(document, [
-      { kind: "nudgeSpriteFrame", sidecarId: sidecar.id, frameId: frame.id, dx, dy },
+      {
+        kind: "nudgeSpriteFrame",
+        sidecarId: sidecar.id,
+        frameId: frame.id,
+        dx,
+        dy,
+      },
     ]).document;
 
     expect(getSelectedFrameY(next)).toBe(frame.y - 1);
@@ -143,7 +169,13 @@ describe("MachinaCanvas coordinate profiles", () => {
       profile: getCoordinateProfile(document.coordinateProfileId),
     });
     const next = applyCanvasCommands(document, [
-      { kind: "nudgeSpriteFrame", sidecarId: sidecar.id, frameId: frame.id, dx, dy },
+      {
+        kind: "nudgeSpriteFrame",
+        sidecarId: sidecar.id,
+        frameId: frame.id,
+        dx,
+        dy,
+      },
     ]).document;
 
     expect(getSelectedFrameY(next)).toBe(frame.y + 1);
@@ -152,7 +184,9 @@ describe("MachinaCanvas coordinate profiles", () => {
   it("terminal nudge-frame up uses visual direction semantics", () => {
     const document = selectFirstSpriteFrame(createSpriteSheetScene());
     const before = getSelectedFrameY(document);
-    const result = executeCanvasTerminalCommand("nudge-frame up 1", { document });
+    const result = executeCanvasTerminalCommand("nudge-frame up 1", {
+      document,
+    });
     const next = result.commands
       ? applyCanvasCommands(document, result.commands).document
       : document;

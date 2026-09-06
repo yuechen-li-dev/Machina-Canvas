@@ -72,7 +72,12 @@ export function resolveCanvasFrame(
       assertFiniteNumber(frame.y, "y");
       assertNonNegativeSize(frame.width, "width");
       assertNonNegativeSize(frame.height, "height");
-      return { x: frame.x, y: frame.y, width: frame.width, height: frame.height };
+      return {
+        x: frame.x,
+        y: frame.y,
+        width: frame.width,
+        height: frame.height,
+      };
     case "anchor": {
       const horizontal = resolveAnchorAxis(
         frame.left,
@@ -137,7 +142,12 @@ export function resolveCanvasObjectFrame(
   context: CanvasFrameResolveContext,
 ): ResolvedCanvasFrame {
   if (!object.frame) {
-    return { x: object.x, y: object.y, width: object.width, height: object.height };
+    return {
+      x: object.x,
+      y: object.y,
+      width: object.width,
+      height: object.height,
+    };
   }
 
   return resolveCanvasFrame(object.frame, context, object);

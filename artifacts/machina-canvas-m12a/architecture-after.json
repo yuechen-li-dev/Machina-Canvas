@@ -1,0 +1,20 @@
+{
+  "milestone": "MACHINA-CANVAS-MODULAR-CORE-M12A",
+  "files": {
+    "src/App.tsx": { "lines": 1, "bytes": 39, "role": "stable app facade" },
+    "src/app/CanvasEditorApp.tsx": { "lines": 6960, "bytes": 242015, "role": "remaining React integration monolith" },
+    "src/sceneCommands.ts": { "lines": 4218, "bytes": 128135, "role": "legacy commands plus module dispatch bridge" },
+    "src/canvasExport.ts": { "lines": 2099, "bytes": 78795, "role": "legacy base export plus contributor aggregation" },
+    "src/sceneModel.ts": { "lines": 84, "bytes": 2226, "role": "explicit aggregate discriminated union" }
+  },
+  "newBoundaries": [
+    "src/core/document",
+    "src/core/commands",
+    "src/core/modules",
+    "src/modules/<capability>",
+    "src/export",
+    "src/app"
+  ],
+  "outcome": "B",
+  "nextBlocker": "Existing React panels and legacy command implementations still require bounded capability-by-capability extraction."
+}

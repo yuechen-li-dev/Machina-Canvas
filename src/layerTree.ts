@@ -79,6 +79,8 @@ function getObjectBadge(object: CanvasObject): string {
       return "GUIDE";
     case "blockoutSidecar":
       return "BLOCK";
+    case "sticker":
+      return "STICKER";
     case "mechanicalAnnotationSidecar":
       return "ANNO";
   }
@@ -149,6 +151,8 @@ function getObjectSubtitle(object: CanvasObject): string | undefined {
       return object.text;
     case "uiComponent":
       return object.componentId;
+    case "sticker":
+      return object.label;
     default:
       return undefined;
   }

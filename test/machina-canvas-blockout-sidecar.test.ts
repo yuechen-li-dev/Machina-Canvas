@@ -144,7 +144,15 @@ describe("MachinaCanvas blockout sidecar", () => {
       id: "",
       boxes: [
         { id: "dup", kind: "bodyRegion", x: 0, y: 0, width: 0, height: 12 },
-        { id: "dup", kind: "hole", x: 2, y: 2, width: 6, height: 6, role: "void" },
+        {
+          id: "dup",
+          kind: "hole",
+          x: 2,
+          y: 2,
+          width: 6,
+          height: 6,
+          role: "void",
+        },
       ],
       points: [],
       curves: [{ id: "curve", kind: "pathCue", points: [[0, 0]], label: "bad" }],
@@ -161,7 +169,10 @@ describe("MachinaCanvas blockout sidecar", () => {
 
   it("stringifies and round-trips blockout TOML", () => {
     const parsed = parseBlockoutSidecarToml(richBlockoutToml);
-    const toml = stringifyBlockoutSidecarToml({ ...parsed, rawToml: undefined });
+    const toml = stringifyBlockoutSidecarToml({
+      ...parsed,
+      rawToml: undefined,
+    });
     const reparsed = parseBlockoutSidecarToml(toml);
     expect(reparsed.boxes).toHaveLength(2);
     expect(reparsed.points).toHaveLength(1);

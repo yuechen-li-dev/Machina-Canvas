@@ -158,7 +158,10 @@ export function resolveGuideAlignmentMarks(
         markId: mark.id,
         targetObjectId: target.object.id,
         local: { x: mark.x, y: mark.y },
-        scene: mapImageLocalPointToScene(target.object, { x: mark.x, y: mark.y }),
+        scene: mapImageLocalPointToScene(target.object, {
+          x: mark.x,
+          y: mark.y,
+        }),
         label: mark.label,
       });
     }

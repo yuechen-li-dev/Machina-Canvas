@@ -33,7 +33,10 @@ describe("TinyTown generated artifacts", () => {
   it("parses the generated guide TOML and keeps the expected regions", () => {
     const text = readFileSync(guideArtifactPath, "utf8");
     const guide = parseGuideSidecarToml(text);
-    const diagnostics = validateGuideSidecar(guide, { imageWidth: 1440, imageHeight: 720 });
+    const diagnostics = validateGuideSidecar(guide, {
+      imageWidth: 1440,
+      imageHeight: 720,
+    });
 
     expect(diagnostics).toEqual([]);
     expect(guide.regions.map((region) => region.id)).toEqual(

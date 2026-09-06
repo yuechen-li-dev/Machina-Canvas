@@ -359,7 +359,12 @@ export function parseSketchOverlayToml(
 
 export function createSketchOverlayObject(
   spec: CanvasSketchSpec,
-  options: { id?: string; name?: string; target?: ImageObject; layerId: string },
+  options: {
+    id?: string;
+    name?: string;
+    target?: ImageObject;
+    layerId: string;
+  },
 ): SketchOverlayObject {
   const target = options.target;
   return {

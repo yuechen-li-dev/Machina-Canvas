@@ -135,9 +135,19 @@ const commands: CanvasCommand[] = [
   { kind: "setFill", id: "badge", fill: "#ff00ff" },
   { kind: "setStroke", id: "badge", stroke: "#00ffff" },
   { kind: "align", ids: ["bg", "headline"], axis: "left" },
-  { kind: "distribute", ids: ["bg", "headline", "badge"], axis: "horizontal", gap: 12 },
+  {
+    kind: "distribute",
+    ids: ["bg", "headline", "badge"],
+    axis: "horizontal",
+    gap: 12,
+  },
   { kind: "moveToGrid", id: "headline", ref: "B2.c", anchor: "center" },
-  { kind: "alignToGrid", ids: ["headline", "badge"], axis: "left", ref: "A1.w" },
+  {
+    kind: "alignToGrid",
+    ids: ["headline", "badge"],
+    axis: "left",
+    ref: "A1.w",
+  },
   { kind: "resizeToGridSpan", id: "bg", span: "A1-C2" },
   {
     kind: "setFrame",

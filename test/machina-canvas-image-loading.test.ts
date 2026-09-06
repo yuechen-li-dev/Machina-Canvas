@@ -113,7 +113,13 @@ describe("MachinaCanvas local image loading", () => {
     expect(object.height).toBe(20);
     expect(object.x).toBe(180);
     expect(object.y).toBe(140);
-    expect(object.frame).toEqual({ kind: "absolute", x: 180, y: 140, width: 40, height: 20 });
+    expect(object.frame).toEqual({
+      kind: "absolute",
+      x: 180,
+      y: 140,
+      width: 40,
+      height: 20,
+    });
     expect(object.tags).toEqual(["loaded", "image"]);
     expect(object.notes).toContain("product.svg");
   });
@@ -171,11 +177,17 @@ describe("MachinaCanvas local image loading", () => {
   });
 
   it("validates removeObject commands with alpha reference warnings", () => {
-    const result = validateCanvasCommands(createDocument(), { kind: "removeObject", id: "alpha" });
+    const result = validateCanvasCommands(createDocument(), {
+      kind: "removeObject",
+      id: "alpha",
+    });
 
     expect(result.ok).toBe(true);
     expect(result.diagnostics).toContainEqual(
-      expect.objectContaining({ severity: "warning", code: "RemovingAlphaMapReference" }),
+      expect.objectContaining({
+        severity: "warning",
+        code: "RemovingAlphaMapReference",
+      }),
     );
   });
 

@@ -74,7 +74,12 @@ function createDocumentWithSidecar() {
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
       { id: "sprites", name: "Sprites", visible: true, objectIds: [image.id] },
-      { id: "sprite-overlays", name: "Sprite Overlays", visible: true, objectIds: [] },
+      {
+        id: "sprite-overlays",
+        name: "Sprite Overlays",
+        visible: true,
+        objectIds: [],
+      },
     ],
     objects: { [image.id]: image },
     selectedObjectId: image.id,
@@ -89,7 +94,11 @@ function createDocumentWithSidecar() {
   return applyCanvasCommands(document, [
     { kind: "addSpriteSidecarObject", object: sidecar, attach: true },
     { kind: "select", id: sidecar.id },
-    { kind: "selectSpriteFrame", sidecarId: sidecar.id, frameId: "maya.down.idle_exact" },
+    {
+      kind: "selectSpriteFrame",
+      sidecarId: sidecar.id,
+      frameId: "maya.down.idle_exact",
+    },
   ]).document;
 }
 
@@ -246,7 +255,10 @@ describe("MachinaCanvas sprite frame editor", () => {
       },
     };
 
-    const hit = hitTestSpriteFrameAtPoint(overlappingSidecar, image, { x: 112, y: 62 });
+    const hit = hitTestSpriteFrameAtPoint(overlappingSidecar, image, {
+      x: 112,
+      y: 62,
+    });
     expect(hit?.frameId).toBe("small");
   });
 

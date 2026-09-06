@@ -211,8 +211,16 @@ describe("MachinaCanvas arc geometry helpers", () => {
   });
 
   it("tangent helper does not mutate input references", () => {
-    const startReference = { kind: "line" as const, from: [0, 0] as Point2, to: [10, 0] as Point2 };
-    const endReference = { kind: "line" as const, from: [10, 0] as Point2, to: [10, 10] as Point2 };
+    const startReference = {
+      kind: "line" as const,
+      from: [0, 0] as Point2,
+      to: [10, 0] as Point2,
+    };
+    const endReference = {
+      kind: "line" as const,
+      from: [10, 0] as Point2,
+      to: [10, 10] as Point2,
+    };
     const before = JSON.stringify({ startReference, endReference });
     createTangentArcBetweenReferences({
       startReference,
@@ -308,7 +316,14 @@ describe("MachinaCanvas arc geometry helpers", () => {
       height: 100,
       unit: "px",
       unitSystem: createCanvasUnitSystem("px"),
-      layers: [{ id: "geometry", name: "Geometry", visible: true, objectIds: [object.id] }],
+      layers: [
+        {
+          id: "geometry",
+          name: "Geometry",
+          visible: true,
+          objectIds: [object.id],
+        },
+      ],
       objects: { [object.id]: object },
     };
     const svg = serializeCanvasRenderSvg(document);

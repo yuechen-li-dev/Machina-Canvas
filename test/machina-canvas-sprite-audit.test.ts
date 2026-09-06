@@ -154,7 +154,12 @@ function createDocument(toml: string) {
     unitSystem: createCanvasUnitSystem("px"),
     layers: [
       { id: "sprites", name: "Sprites", visible: true, objectIds: [image.id] },
-      { id: "sprite-overlays", name: "Sprite Overlays", visible: true, objectIds: [sidecar.id] },
+      {
+        id: "sprite-overlays",
+        name: "Sprite Overlays",
+        visible: true,
+        objectIds: [sidecar.id],
+      },
     ],
     objects: {
       [image.id]: { ...image, spriteSidecarId: sidecar.id },
@@ -175,7 +180,10 @@ describe("MachinaCanvas sprite audit", () => {
     const report = buildSpriteAuditReport(createSidecar(suspiciousToml), image);
     expect(report.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ code: "FrameOutOfBounds", frameId: "hero.walk.edge" }),
+        expect.objectContaining({
+          code: "FrameOutOfBounds",
+          frameId: "hero.walk.edge",
+        }),
         expect.objectContaining({
           code: "CustomFrameNearGrid",
           frameId: "hero.walk.bad_exact",
@@ -189,8 +197,14 @@ describe("MachinaCanvas sprite audit", () => {
     const report = buildSpriteAuditReport(createSidecar(suspiciousToml), image);
     expect(report.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ code: "DuplicateRect", frameId: "hero.walk.dup_rect" }),
-        expect.objectContaining({ code: "DuplicateLabel", frameId: "hero.walk.dup_rect" }),
+        expect.objectContaining({
+          code: "DuplicateRect",
+          frameId: "hero.walk.dup_rect",
+        }),
+        expect.objectContaining({
+          code: "DuplicateLabel",
+          frameId: "hero.walk.dup_rect",
+        }),
       ]),
     );
   });

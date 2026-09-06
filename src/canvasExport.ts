@@ -53,6 +53,8 @@ import {
 } from "./spriteGuideRegions";
 import { compileSpriteRuntimeSidecar } from "./spriteGuideCompiler";
 import { stringifyTomlDocument } from "./tomlSyntax";
+import { collectCanvasModuleExportArtifacts } from "./export/contributions";
+import { canvasModuleExportContributions } from "./modules/exportContributions";
 
 export type CanvasExportFile = {
   path: string;
@@ -831,7 +833,10 @@ function createRuntimeSpriteTomlRecord(object: SpriteSidecarObject): Record<stri
   }
 
   const record: Record<string, unknown> = {
-    frames: createSpriteFramesTomlRecord(object, { mode: "runtime", includeStackframes: true }),
+    frames: createSpriteFramesTomlRecord(object, {
+      mode: "runtime",
+      includeStackframes: true,
+    }),
   };
   if (Object.keys(sprites).length > 0) record.sprites = sprites;
   if (Object.keys(stackframes).length > 0) record.stackframes = stackframes;
@@ -1025,6 +1030,12 @@ export function serializeCanvasObjectToml(object: CanvasObject): string {
     )) {
       lines.push(`${key} = ${tomlUiPropValue(value)}`);
     }
+  }
+
+  if (object.kind === "sticker") {
+    lines.push("", "[sticker]", `label = ${quoteTomlString(object.label)}`);
+    if (object.src !== undefined)
+      lines.push(`src = ${quoteTomlString(normalizeAssetSrc(object.src))}`);
   }
 
   if (object.fill !== undefined || object.stroke !== undefined) {
@@ -1237,6 +1248,19 @@ export function serializeCanvasCommandsToml(
         lines.push(
           `sidecar_id = ${quoteTomlString(command.sidecarId)}`,
           `frame_id = ${quoteTomlString(command.frameId)}`,
+        );
+        break;
+      case "addSticker":
+        lines.push(
+          `id = ${quoteTomlString(command.object.id)}`,
+          `label = ${quoteTomlString(command.object.label)}`,
+          `layer_id = ${quoteTomlString(command.object.layerId)}`,
+        );
+        break;
+      case "renameSticker":
+        lines.push(
+          `id = ${quoteTomlString(command.id)}`,
+          `label = ${quoteTomlString(command.label)}`,
         );
         break;
     }
@@ -1493,7 +1517,12 @@ function serializeResolvedSpriteSidecar(
     }
   }
 
-  const imageRect = { x: object.x, y: object.y, width: object.width, height: object.height };
+  const imageRect = {
+    x: object.x,
+    y: object.y,
+    width: object.width,
+    height: object.height,
+  };
   for (const frame of sidecar.spec.frames) {
     const presentation = plan.framePresentations.get(frame.id);
     if (!presentation) continue;
@@ -1822,7 +1851,10 @@ function serializeResolvedMechanicalAnnotationSidecar(
   return lines;
 }
 
-function getSvgSizeAttributes(document: CanvasDocument): { width: string; height: string } {
+function getSvgSizeAttributes(document: CanvasDocument): {
+  width: string;
+  height: string;
+} {
   const mechanicalSidecar = Object.values(document.objects).find(
     (object): object is Extract<CanvasObject, { kind: "mechanicalAnnotationSidecar" }> =>
       object.kind === "mechanicalAnnotationSidecar" && object.annotations.sheet !== undefined,
@@ -1907,6 +1939,13 @@ export function serializeCanvasRenderSvg(document: CanvasDocument): string {
           `    <rect x="${object.x}" y="${object.y}" width="${object.width}" height="${object.height}" rx="8" fill="#ffffff" stroke="#111111" />`,
           `    <text x="${object.x + 12}" y="${object.y + Math.min(28, object.height / 2 + 5)}" fill="#111111" font-size="14" font-weight="700">${escapeXmlText(uiComponentPreviewLabel(object))}</text>`,
           `    <text x="${object.x + 12}" y="${object.y + object.height - 12}" fill="#555550" font-size="10">${escapeXmlText(object.componentId)}</text>`,
+          "  </g>",
+        );
+      } else if (object.kind === "sticker") {
+        lines.push(
+          `  <g ${attrs}>`,
+          `    <rect x="${object.x}" y="${object.y}" width="${object.width}" height="${object.height}" rx="8" fill="${quoteXmlAttribute(object.fill ?? "#ffe66d")}" stroke="${quoteXmlAttribute(object.stroke ?? "#28251d")}" />`,
+          `    <text x="${object.x + 10}" y="${object.y + object.height / 2 + 5}" fill="#28251d" font-size="14" font-weight="700">${escapeXmlText(object.label)}</text>`,
           "  </g>",
         );
       } else if (object.kind === "image") {
@@ -2047,6 +2086,14 @@ export function createCanvasExportBundle(
       text: tsx.text,
     });
   }
+
+  files.push(
+    ...collectCanvasModuleExportArtifacts(
+      document,
+      canvasModuleExportContributions,
+      new Set(files.map((file) => file.path)),
+    ),
+  );
 
   return { rootName, files };
 }

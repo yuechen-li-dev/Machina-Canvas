@@ -1,0 +1,13 @@
+{
+  "checkedInArtifactsChanged": false,
+  "mechanical354": "byte parity after regeneration",
+  "mechanical354Blockout": "byte parity after regeneration",
+  "mechanicalM40c": "byte parity after regeneration",
+  "guideOverlay": "semantic parity; generated JSON formatting was restored to preserve checked-in bytes",
+  "tinyTown": {
+    "workflowCompleted": true,
+    "checkedInBytesPreserved": true,
+    "parityQualified": false,
+    "reason": "The former Dominatus source files were renamed/replaced; the current compiled and corrected inputs lower to different frame overrides. Generated drift was inspected and not committed."
+  }
+}

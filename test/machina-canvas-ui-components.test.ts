@@ -117,7 +117,9 @@ describe("MachinaCanvas UI component objects", () => {
   });
 
   it("adds generated-page.tsx and TSX metadata to export bundles", () => {
-    const bundle = createCanvasExportBundle(initialSceneDocument, { tsxOptions: {} });
+    const bundle = createCanvasExportBundle(initialSceneDocument, {
+      tsxOptions: {},
+    });
     expect(bundle.files.some((file) => file.path === "generated-page.tsx")).toBe(true);
     const handoff = bundle.files.find((file) => file.path === "handoff.toml")?.text ?? "";
     expect(handoff).toContain('tsx = "generated-page.tsx"');

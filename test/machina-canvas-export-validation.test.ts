@@ -126,7 +126,10 @@ describe("MachinaCanvas export validation", () => {
   });
 
   it("fails an empty bundle", () => {
-    const result = validateCanvasExportBundle({ rootName: "empty.mcanvas", files: [] });
+    const result = validateCanvasExportBundle({
+      rootName: "empty.mcanvas",
+      files: [],
+    });
 
     expect(result.ok).toBe(false);
     expect(result.diagnostics.map((diagnostic) => diagnostic.code)).toContain("EmptyExportBundle");
@@ -137,7 +140,10 @@ describe("MachinaCanvas export validation", () => {
 
     expect(result.ok).toBe(false);
     expect(result.diagnostics).toContainEqual(
-      expect.objectContaining({ code: "MissingRequiredFile", path: "document.json" }),
+      expect.objectContaining({
+        code: "MissingRequiredFile",
+        path: "document.json",
+      }),
     );
   });
 
@@ -262,7 +268,9 @@ describe("MachinaCanvas export validation", () => {
   });
 
   it("reports missing command recipes when commands are expected", () => {
-    const result = validateCanvasExportBundle(createBundle(), { expectedCommands: true });
+    const result = validateCanvasExportBundle(createBundle(), {
+      expectedCommands: true,
+    });
 
     expect(result.ok).toBe(false);
     expect(result.diagnostics).toContainEqual(

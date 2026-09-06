@@ -18,7 +18,7 @@
     "artifacts:guide-overlay": "vite-node scripts/create-guide-overlay-fixture.ts"
   },
   "dependencies": {
-    "machinalayout": "file:..",
+    "machinalayout": "file:../MachinaLayout.JS",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "smol-toml": "^1.7.0"
@@ -29,6 +29,7 @@
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@types/node": "^24.0.0",
     "@vitejs/plugin-react": "^5.0.0",
     "jsdom": "^29.1.1",
     "typescript": "^5.6.3",

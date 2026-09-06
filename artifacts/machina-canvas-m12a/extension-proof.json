@@ -1,0 +1,20 @@
+{
+  "capability": "Sticker",
+  "author": "fresh-context subagent",
+  "documentationSufficient": true,
+  "implementationRoots": ["src/modules/stickers", "test/modules/stickers"],
+  "proofFilesAdded": 5,
+  "centralFilesChangedByFreshAgent": ["src/modules/definitions.ts"],
+  "appTsxChangedByFreshAgent": false,
+  "canvasEditorAppChangedByFreshAgent": false,
+  "canvasExportChangedByFreshAgent": false,
+  "legacyCommandSwitchChangedByFreshAgent": false,
+  "focusedTests": { "files": 4, "tests": 9, "passed": 9 },
+  "navigation": {
+    "imageTool": "src/modules/images plus the image module tools contribution",
+    "spriteAudit": "src/modules/sprites plus the sprite diagnostics contribution",
+    "exportArtifact": "owning module plus src/modules/exportContributions.ts",
+    "inspector": "owning module plus src/app/inspectorContributions.tsx",
+    "command": "owning module plus src/modules/commandContributions.ts"
+  }
+}

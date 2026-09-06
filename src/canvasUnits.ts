@@ -131,7 +131,11 @@ export function formatCanvasRect(
 ): string {
   const x = formatCanvasMeasurement(rect.x, unitSystem, { includeUnit: false });
   const y = formatCanvasMeasurement(rect.y, unitSystem, { includeUnit: false });
-  const width = formatCanvasMeasurement(rect.width, unitSystem, { includeUnit: false });
-  const height = formatCanvasMeasurement(rect.height, unitSystem, { includeUnit: false });
+  const width = formatCanvasMeasurement(rect.width, unitSystem, {
+    includeUnit: false,
+  });
+  const height = formatCanvasMeasurement(rect.height, unitSystem, {
+    includeUnit: false,
+  });
   return `x=${x} y=${y} w=${width} h=${height} ${unitSystem.label}`;
 }

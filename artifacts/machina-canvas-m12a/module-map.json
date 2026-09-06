@@ -1,0 +1,19 @@
+{
+  "registration": "src/modules/index.ts",
+  "typeAggregation": "src/sceneModel.ts",
+  "modules": {
+    "graphics": { "records": ["rect", "ellipse", "path", "text"], "modes": ["blank", "graphics"] },
+    "images": { "records": ["image", "sketchOverlay"], "tools": ["generate-alpha-map"] },
+    "sprites": { "records": ["spriteSidecar"], "modes": ["sprites"], "diagnostics": ["sprite-audit", "alpha-cut-audit"] },
+    "guides": { "records": ["guideSidecar", "blockoutSidecar"] },
+    "mechanical": { "records": ["mechanicalAnnotationSidecar"], "modes": ["mechanical"] },
+    "webUi": { "records": ["uiComponent"], "modes": ["webUi"] },
+    "stickers": {
+      "records": ["sticker"],
+      "commands": ["addSticker", "renameSticker"],
+      "tools": ["create-sticker"],
+      "inspectors": ["stickers.label"],
+      "exports": ["stickers/stickers.json"]
+    }
+  }
+}

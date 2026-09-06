@@ -1,0 +1,19 @@
+{
+  "milestone": "MACHINA-CANVAS-MODULAR-CORE-M12A",
+  "kind": "llm-native-editor-modularization",
+  "outcome": "B",
+  "productSemanticsPreserved": true,
+  "latestMachinaLayoutUsed": true,
+  "machinaLayoutVersion": "0.7.0",
+  "moduleCompositionQualified": true,
+  "commandOwnershipModularized": false,
+  "exportOwnershipModularized": true,
+  "toolRegistryPreserved": true,
+  "workflowApiPreserved": true,
+  "appTsxMateriallyReduced": true,
+  "freshModuleExtensionQualified": true,
+  "artifactParityQualified": false,
+  "dynamicPluginSystemAdded": false,
+  "machinaUiPortPerformed": false,
+  "vnFeaturesAdded": false
+}

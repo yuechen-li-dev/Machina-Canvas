@@ -16,8 +16,8 @@ import type { CanvasDocument, CanvasObject } from "../src/sceneModel";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, "../../..");
-const artifactsDir = join(repoRoot, "app", "artifacts");
+const repoRoot = resolve(__dirname, "..");
+const artifactsDir = join(repoRoot, "artifacts");
 const biomeBin = join(repoRoot, "node_modules", "@biomejs", "biome", "bin", "biome");
 const inkscapeBin = "C:\\Program Files\\Inkscape\\bin\\inkscape.com";
 
@@ -630,16 +630,51 @@ function createGuideSidecarObject(): Extract<CanvasObject, { kind: "guideSidecar
           x: 74,
           label: "Main vertical datum through large bore",
         },
-        { id: "datum-lower-extent", kind: "horizontal", y: 166, label: "Lower lobe extent" },
+        {
+          id: "datum-lower-extent",
+          kind: "horizontal",
+          y: 166,
+          label: "Lower lobe extent",
+        },
       ],
       dimensions: [
-        { id: "guide-overall-100", kind: "linear", from: [74, 38], to: [203, 38], label: "100" },
-        { id: "guide-slot-30", kind: "linear", from: [169, 68], to: [203, 68], label: "30" },
+        {
+          id: "guide-overall-100",
+          kind: "linear",
+          from: [74, 38],
+          to: [203, 38],
+          label: "100",
+        },
+        {
+          id: "guide-slot-30",
+          kind: "linear",
+          from: [169, 68],
+          to: [203, 68],
+          label: "30",
+        },
       ],
       alignmentMarks: [
-        { id: "guide-bore-center", kind: "point", x: 74, y: 78, label: "bore center" },
-        { id: "guide-left-small-hole", kind: "point", x: 86, y: 144, label: "small hole" },
-        { id: "guide-right-small-hole", kind: "point", x: 126, y: 132, label: "small hole" },
+        {
+          id: "guide-bore-center",
+          kind: "point",
+          x: 74,
+          y: 78,
+          label: "bore center",
+        },
+        {
+          id: "guide-left-small-hole",
+          kind: "point",
+          x: 86,
+          y: 144,
+          label: "small hole",
+        },
+        {
+          id: "guide-right-small-hole",
+          kind: "point",
+          x: 126,
+          y: 132,
+          label: "small hole",
+        },
       ],
     },
   };
@@ -663,8 +698,20 @@ function createExercise354BlockoutSidecar(): CanvasBlockoutSidecar {
     })),
     points: [
       { id: "boss-center", kind: "center", x: 74, y: 78, label: "Boss center" },
-      { id: "left-small-hole-center", kind: "center", x: 86, y: 144, label: "Left hole" },
-      { id: "right-small-hole-center", kind: "center", x: 126, y: 132, label: "Right hole" },
+      {
+        id: "left-small-hole-center",
+        kind: "center",
+        x: 86,
+        y: 144,
+        label: "Left hole",
+      },
+      {
+        id: "right-small-hole-center",
+        kind: "center",
+        x: 126,
+        y: 132,
+        label: "Right hole",
+      },
     ],
     curves: [
       {
@@ -840,9 +887,24 @@ function createMechanicalSidecar(title: string) {
       },
     ],
     notes: [
-      { id: "blockout-source-note", kind: "note", at: [218, 38], text: "2D EXERCISES" },
-      { id: "blockout-exercise-number", kind: "note", at: [221, 52], text: "354" },
-      { id: "blockout-method-note", kind: "note", at: [16, 188], text: "M39g blockout authored" },
+      {
+        id: "blockout-source-note",
+        kind: "note",
+        at: [218, 38],
+        text: "2D EXERCISES",
+      },
+      {
+        id: "blockout-exercise-number",
+        kind: "note",
+        at: [221, 52],
+        text: "354",
+      },
+      {
+        id: "blockout-method-note",
+        kind: "note",
+        at: [16, 188],
+        text: "M39g blockout authored",
+      },
     ],
     datums: [],
     blocks: [
