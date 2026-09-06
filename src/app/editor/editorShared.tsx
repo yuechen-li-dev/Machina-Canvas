@@ -93,6 +93,7 @@ export const commandKindLabels = enumTable<CanvasCommand["kind"], string>({
   detachGuideSidecar: "Detach guide sidecar",
   setGuideSidecarVisible: "Set guide sidecar visible",
   setGuideSidecarOpacity: "Set guide sidecar opacity",
+  setGuideSidecarShowLabels: "Set guide sidecar labels",
   attachBlockoutSidecar: "Attach blockout sidecar",
   detachBlockoutSidecar: "Detach blockout sidecar",
   setBlockoutSidecarVisible: "Set blockout sidecar visible",

@@ -1,0 +1,18 @@
+{
+  "milestone": "MACHINA-CANVAS-SHELL-COORDINATOR-M12C",
+  "kind": "bounded-shell-and-inspector-decomposition",
+  "outcome": "A",
+  "m12bArchitecturePreserved": true,
+  "browserApisIsolated": true,
+  "asyncCoordinatorQualified": true,
+  "moduleLoadOwnershipQualified": true,
+  "shellCompositionQualified": true,
+  "guideInspectorModuleOwned": true,
+  "mechanicalInspectorModuleOwned": true,
+  "inspectorCompositionQualified": true,
+  "freshExtensionQualified": true,
+  "freshBugFixQualified": true,
+  "dogfoodQualified": true,
+  "csharpPortPerformed": false,
+  "vnFeaturesAdded": false
+}

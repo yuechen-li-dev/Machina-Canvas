@@ -1,0 +1,14 @@
+{
+  "file": "src/app/shell/CanvasEditorShell.tsx",
+  "lines": 597,
+  "bytes": 20295,
+  "ownedBrowserApis": false,
+  "ownedModuleParsingAndAttachment": false,
+  "ownedExportAndCheckpointMaterialization": false,
+  "remainingResponsibilities": [
+    "React composition",
+    "transient editor state",
+    "generic session and coordinator invocation",
+    "mode routing"
+  ]
+}

@@ -1,24 +1,13 @@
 import { MachinaReactView, type MachinaSlotProps } from "machinalayout/react";
 import { matchKind } from "machinalayout/match";
-import { type ComponentType, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ComponentType, useCallback, useMemo, useRef, useState } from "react";
 import { resolveAppLayout } from "../../appLayout";
-import {
-  createBlockoutSidecarObject,
-  createUnattachedBlockoutSidecarObject,
-  parseBlockoutSidecarToml,
-} from "../../blockoutSidecar";
 import { CanvasModeStart } from "../../CanvasModeStart";
 import {
   type CanvasTerminalLogEntry,
   type CanvasTerminalSideEffect,
   executeCanvasTerminalCommand,
 } from "../../canvasCommandsTerminal";
-import { type CanvasExportBundle, createCanvasExportBundle } from "../../canvasExport";
-import {
-  type CanvasExportValidationResult,
-  formatCanvasExportValidationReport,
-  validateCanvasExportBundle,
-} from "../../canvasExportValidation";
 import { type CanvasAidToggles, getDefaultCanvasAidToggles } from "../../canvasViewAids";
 import {
   createCanvasViewport,
@@ -36,42 +25,7 @@ import {
   getCanvasEditorModeTemplate,
 } from "../../editorModes";
 import {
-  applyExportPreset,
-  CANVAS_EXPORT_PRESETS,
-  type CanvasExportCart,
-  type CanvasExportCheckoutResult,
-  checkoutExportCart,
-  collectCanvasExportArtifacts,
-  createCanvasCheckpointArtifact,
-  createExportCart,
-  reconcileExportCart,
-  toggleExportArtifact,
-} from "../../exportCart";
-import {
-  createGuideSidecarObject,
-  createUnattachedGuideSidecarObject,
-  parseGuideSidecarToml,
-} from "../../guideSidecar";
-import { createImageObjectFromAsset, makeUniqueObjectId } from "../../imageAssets";
-import {
-  createDefaultMechanicalSheetMetadata,
-  createMechanicalAnnotationSet,
-  createMechanicalAnnotationSidecarObject,
-} from "../../mechanicalAnnotations";
-import {
-  getRasterExportFileName,
-  lowerCanvasDocumentToRasterBlob,
-  type NormalizedRasterExportOptions,
-  normalizeRasterExportOptions,
-  type RasterExportBackground,
-} from "../../rasterExport";
-import {
-  addObjectToLayerGroup,
   applyCanvasCommands,
-  attachAlphaMapToImage,
-  attachGuideSidecarToImage,
-  attachSketchOverlayToImage,
-  attachSpriteSidecarToImage,
   type CanvasCommand,
   type CanvasCommandApplyResult,
   type CanvasCommandValidationResult,
@@ -79,16 +33,10 @@ import {
   validateCanvasCommands,
 } from "../../sceneCommands";
 import { getSceneGeometryDiagnostics } from "../../sceneGeometry";
-import type { CanvasDocument } from "../../sceneModel";
-import { summarizeScene } from "../../sceneSummary";
-import { createSketchOverlayObject, parseSketchOverlayToml } from "../../sketchOverlay";
 import { DEFAULT_SPRITE_FRAME_DATUM_SNAP_DISTANCE } from "../../spriteGuideDatums";
-import {
-  createSpriteSidecarObject,
-  createUnattachedSpriteSidecarObject,
-  parseSpriteSidecarToml,
-} from "../../spriteSidecar";
 import type { CanvasToolResult } from "../../tools";
+import { CanvasEditorAsyncCoordinator } from "../async/CanvasEditorAsyncCoordinator";
+import { browserExportService, browserFileService } from "../browser/BrowserEditorServices";
 import { CanvasPanel } from "../canvas/CanvasPanel";
 import {
   type AppViewData,
@@ -96,18 +44,15 @@ import {
   exampleCommandJson,
   getDefaultImageLayerId,
   getOwnerImageForSelection,
-  getSelectedExportFile,
   getSelectedObject,
   INITIAL_EDITOR_DOCUMENT,
   INITIAL_MODE_TEMPLATE,
   isToolGroupVisibleForMode,
   normalizeCommands,
   parseCommandJson,
-  type RasterExportArtifact,
   type SpriteFrameEditSettings,
   useRootRect,
 } from "../editor/editorShared";
-import { readCanvasImageFile, readCanvasTextFile } from "../files/browserFileLoading";
 import {
   getSelectedSpriteFrameState,
   getSpriteCommandApplyContext,
@@ -115,6 +60,7 @@ import {
 } from "../inspector/Inspector";
 import { Breadcrumb, SceneSummaryShelf } from "./AuxiliaryViews";
 import { SceneTree } from "./SceneTree";
+import { useCanvasExportPresenter } from "./useCanvasExportPresenter";
 
 export const VIEWS = {
   SceneTree,
@@ -143,19 +89,6 @@ export function App() {
   const [aidToggles, setAidToggles] = useState<CanvasAidToggles>(getDefaultCanvasAidToggles());
   const [lastApplyResults, setLastApplyResults] = useState<CanvasCommandApplyResult[]>([]);
   const [lastToolResult, setLastToolResult] = useState<CanvasToolResult>();
-  const [exportCart, setExportCart] = useState<CanvasExportCart>({
-    selectedArtifactIds: [],
-    checkoutMode: "downloadFiles",
-  });
-  const [checkpointNote, setCheckpointNote] = useState("");
-  const [lastCheckout, setLastCheckout] = useState<CanvasExportCheckoutResult>();
-  const [exportBundle, setExportBundle] = useState<CanvasExportBundle>();
-  const [exportValidation, setExportValidation] = useState<CanvasExportValidationResult>();
-  const [selectedExportPath, setSelectedExportPath] = useState<string>();
-  const [exportStatus, setExportStatus] = useState("");
-  const [rasterScale, setRasterScaleState] = useState(1);
-  const [rasterBackground, setRasterBackgroundState] =
-    useState<RasterExportBackground>("transparent");
   const [spriteFrameEditSettings, setSpriteFrameEditSettingsState] =
     useState<SpriteFrameEditSettings>({
       snapToGrid: false,
@@ -164,10 +97,16 @@ export function App() {
       datumSnapDistance: DEFAULT_SPRITE_FRAME_DATUM_SNAP_DISTANCE,
       restrictDatumSnapsToGuideRegion: true,
     });
-  const [rasterArtifact, setRasterArtifact] = useState<RasterExportArtifact>();
-  const [rasterStatus, setRasterStatus] = useState("");
   const [editorSession] = useState(
     () => new CanvasEditorSession({ document: INITIAL_EDITOR_DOCUMENT }),
+  );
+  const [asyncCoordinator] = useState(
+    () =>
+      new CanvasEditorAsyncCoordinator({
+        session: editorSession,
+        files: browserFileService,
+        exports: browserExportService,
+      }),
   );
   const commandLogCounter = useRef(0);
   const geometryDiagnostics = useMemo(() => getSceneGeometryDiagnostics(document), [document]);
@@ -176,20 +115,30 @@ export function App() {
     : INITIAL_MODE_TEMPLATE;
   const selectedObject = getSelectedObject(document);
   const selectedSpriteFrame = getSelectedSpriteFrameState(document, selectedObject);
-  const exportArtifacts = useMemo(
-    () =>
-      collectCanvasExportArtifacts({
-        scene: document,
-        activeModeId,
-        selectedObjectId: document.selectedObjectId,
-        selectedSpriteFrameId: selectedSpriteFrame?.frame.id,
-      }),
-    [activeModeId, document, selectedSpriteFrame?.frame.id],
-  );
-
-  useEffect(() => {
-    setExportCart((current) => reconcileExportCart(exportArtifacts, current));
-  }, [exportArtifacts]);
+  const exportPresenter = useCanvasExportPresenter({
+    coordinator: asyncCoordinator,
+    document,
+    viewport,
+    commandLog,
+    diagnostics: geometryDiagnostics,
+    activeModeId,
+    selectedSpriteFrameId: selectedSpriteFrame?.frame.id,
+    setLastCommand,
+  });
+  const {
+    exportArtifacts,
+    exportCart,
+    checkpointNote,
+    lastCheckout,
+    exportBundle,
+    exportValidation,
+    selectedExportPath,
+    exportStatus,
+    rasterScale,
+    rasterBackground,
+    rasterArtifact,
+    rasterStatus,
+  } = exportPresenter;
 
   const loadMode = (modeId: CanvasEditorModeId) => {
     const template = getCanvasEditorModeTemplate(modeId);
@@ -210,23 +159,7 @@ export function App() {
     setAidToggles(getDefaultCanvasAidToggles(modeId));
     setLastApplyResults([]);
     setLastToolResult(undefined);
-    setExportCart(
-      createExportCart(
-        collectCanvasExportArtifacts({
-          scene: resolvedDocument,
-          activeModeId: modeId,
-          selectedObjectId: resolvedDocument.selectedObjectId,
-        }),
-      ),
-    );
-    setCheckpointNote("");
-    setLastCheckout(undefined);
-    setExportBundle(undefined);
-    setExportValidation(undefined);
-    setSelectedExportPath(undefined);
-    setExportStatus("");
-    setRasterScaleState(1);
-    setRasterBackgroundState("transparent");
+    exportPresenter.reset(modeId, resolvedDocument);
     setSpriteFrameEditSettingsState({
       snapToGrid: false,
       gridSize: 1,
@@ -234,8 +167,6 @@ export function App() {
       datumSnapDistance: DEFAULT_SPRITE_FRAME_DATUM_SNAP_DISTANCE,
       restrictDatumSnapsToGuideRegion: true,
     });
-    setRasterArtifact(undefined);
-    setRasterStatus("");
     commandLogCounter.current = 0;
   };
 
@@ -256,7 +187,7 @@ export function App() {
     setLastCommand("choose a canvas mode");
   }, [activeModeId, commandLog.length, exportBundle, exportValidation, rasterArtifact]);
 
-  const viewData = useMemo<AppViewData>(() => {
+  const viewData: AppViewData = (() => {
     const isToolGroupVisible = (group: CanvasToolGroupId) =>
       isToolGroupVisibleForMode(activeMode, group);
     const recordAppliedCommands = (
@@ -296,80 +227,18 @@ export function App() {
       runCommands([command]);
     };
 
-    const setCheckpointNoteValue = (value: string) => {
-      setCheckpointNote(value);
-    };
-
-    const applyCartPreset = (presetId: string) => {
-      const preset = CANVAS_EXPORT_PRESETS.find((candidate) => candidate.id === presetId);
-      if (!preset) {
-        setExportStatus(`Unknown export preset "${presetId}".`);
-        return;
-      }
-      setExportCart(applyExportPreset(exportArtifacts, preset));
-      setExportStatus(`Preset ${preset.title} selected.`);
-    };
-
-    const toggleCartArtifact = (artifactId: string) => {
-      setExportCart((current) => toggleExportArtifact(current, artifactId, exportArtifacts));
-    };
-
-    const saveCheckpoint = async (message?: string) => {
-      const artifact = createCanvasCheckpointArtifact({
-        scene: document,
-        activeModeId,
-        selectedObjectId: document.selectedObjectId,
-        selectedSpriteFrameId: selectedSpriteFrame?.frame.id,
-        message: message ?? (checkpointNote.trim() || undefined),
-      });
-      const result = await checkoutExportCart({
-        artifacts: [artifact],
-        cart: {
-          selectedArtifactIds: [artifact.id],
-          checkoutMode: "downloadFiles",
-        },
-        activeModeId,
-      });
-      setLastCheckout(result);
-      if (result.kind === "ok") {
-        setExportStatus(`Checkpoint saved as ${artifact.filename}.`);
-        setCheckpointNote("");
-        setLastCommand("checkpoint saved");
-      } else {
-        setExportStatus(`Checkpoint failed: ${result.message}`);
-        setLastCommand("checkpoint failed");
-      }
-    };
-
-    const runCartCheckout = async () => {
-      const result = await checkoutExportCart({
-        artifacts: exportArtifacts,
-        cart: exportCart,
-        activeModeId,
-      });
-      setLastCheckout(result);
-      if (result.kind === "ok") {
-        setExportStatus(
-          `Checked out ${result.artifactCount} file${result.artifactCount === 1 ? "" : "s"}: ${result.filenames.join(", ")}`,
-        );
-        setLastCommand("export checkout completed");
-      } else {
-        setExportStatus(
-          `Checkout failed${result.failedArtifactId ? ` on ${result.failedArtifactId}` : ""}: ${result.message}`,
-        );
-        setLastCommand("export checkout failed");
-      }
-    };
+    const applyCartPreset = exportPresenter.applyPreset;
+    const toggleCartArtifact = exportPresenter.toggleArtifact;
+    const runCartCheckout = exportPresenter.checkout;
+    const saveCheckpoint = exportPresenter.saveCheckpoint;
 
     const applyTerminalSideEffect = (sideEffect: CanvasTerminalSideEffect) => {
       matchKind(sideEffect, {
         applyExportPreset: ({ presetId }) => applyCartPreset(presetId),
-        setExportArtifactSelected: ({ artifactId, selected }) =>
-          setExportCart((current) => {
-            const isSelected = current.selectedArtifactIds.includes(artifactId);
-            if (isSelected === selected) return current;
-            return toggleExportArtifact(current, artifactId, exportArtifacts);
-          }),
+        setExportArtifactSelected: ({ artifactId, selected }) => {
+          const isSelected = exportCart.selectedArtifactIds.includes(artifactId);
+          if (isSelected !== selected) toggleCartArtifact(artifactId);
+        },
         checkoutExportCart: () => void runCartCheckout(),
         saveCheckpoint: ({ message }) => void saveCheckpoint(message),
       });
@@ -380,7 +249,7 @@ export function App() {
         document,
         exportArtifacts,
         exportCart,
-        exportPresets: CANVAS_EXPORT_PRESETS,
+        exportPresets: exportPresenter.exportPresets,
       });
       if (result.clearLog) {
         setTerminalLog([]);
@@ -432,369 +301,97 @@ export function App() {
       setLastCommand(`created layer group ${nextTitle}`);
     };
 
+    const applyCoordinatorDocument = (
+      result: Awaited<ReturnType<CanvasEditorAsyncCoordinator["loadImage"]>>,
+    ) => {
+      matchKind(result, {
+        err: ({ error }) => setLastCommand(error),
+        ok: ({ value, message }) => {
+          setDocument(value.document);
+          if (value.validation) setCommandValidation(value.validation);
+          if (value.commands?.length && value.commandResults) {
+            recordAppliedCommands([...value.commands], [...value.commandResults]);
+          } else {
+            setLastCommand(message);
+          }
+        },
+      });
+    };
+
+    const getLoadContext = (targetId?: string, groupId?: string) => ({
+      document,
+      layerId: getDefaultImageLayerId(document),
+      targetId,
+      groupId,
+      commandOptions: getSpriteCommandApplyContext(spriteFrameEditSettings),
+    });
+
     const createMechanicalAnnotationsSidecar: AppViewData["createMechanicalAnnotationsSidecar"] =
       async (options) => {
-        try {
-          const selected = getSelectedObject(document);
-          const targetObjectId = options?.targetObjectId ?? selected?.id;
-          const target = targetObjectId ? document.objects[targetObjectId] : undefined;
-          const layerId = target?.layerId ?? getDefaultImageLayerId(document);
-          const sidecarId = makeUniqueObjectId("mechanical-annotations", document);
-          const geometryBounds = target
-            ? {
-                x: target.x,
-                y: target.y,
-                width: target.width,
-                height: target.height,
-              }
-            : { x: 0, y: 0, width: document.width, height: document.height };
-          const annotationUnits =
-            document.unit === "mm" ||
-            document.unit === "cm" ||
-            document.unit === "in" ||
-            document.unit === "px"
-              ? document.unit
-              : "px";
-          const sidecar = createMechanicalAnnotationSidecarObject({
-            id: sidecarId,
-            name: "Mechanical annotations",
-            layerId,
-            x: geometryBounds.x,
-            y: geometryBounds.y,
-            width: geometryBounds.width,
-            height: geometryBounds.height,
-            targetObjectId,
-            annotations: createMechanicalAnnotationSet({
-              id: `${sidecarId}-set`,
-              units: annotationUnits,
-              sheet:
-                activeModeId === "mechanical" ? createDefaultMechanicalSheetMetadata() : undefined,
-            }),
-          });
-          let nextDocument: CanvasDocument = {
-            ...document,
-            selectedObjectId: sidecar.id,
-            objects: {
-              ...document.objects,
-              [sidecar.id]: sidecar,
-            },
-            layers: document.layers.map((layer) =>
-              layer.id === sidecar.layerId
-                ? { ...layer, objectIds: [...layer.objectIds, sidecar.id] }
-                : layer,
-            ),
-          };
-          if (options?.groupId) {
-            nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, sidecar.id);
-          }
-          setDocument(nextDocument);
-          setLastCommand(`created ${sidecar.name.toLowerCase()}`);
-        } catch (caught) {
-          setLastCommand(
-            caught instanceof Error
-              ? caught.message
-              : "Mechanical annotations could not be created.",
-          );
-        }
+        const selected = getSelectedObject(document);
+        applyCoordinatorDocument(
+          await asyncCoordinator.createMechanicalSidecar({
+            ...getLoadContext(options?.targetObjectId ?? selected?.id, options?.groupId),
+            useDefaultSheet: activeModeId === "mechanical",
+          }),
+        );
       };
 
     const loadImageFile: AppViewData["loadImageFile"] = async (file, options) => {
-      try {
-        const role = options?.role ?? "image";
-        const asset = await readCanvasImageFile(file, {
-          idPrefix: role === "image" ? "image-" : "alpha-",
-        });
-        const objectId = makeUniqueObjectId(asset.id, document);
-        const object = createImageObjectFromAsset(asset, {
-          id: objectId,
-          layerId: getDefaultImageLayerId(document),
-          role,
-          document,
-        });
-        const command: CanvasCommand = { kind: "addImageObject", object };
-        const validation = validateCanvasCommands(document, command);
-        setCommandValidation(validation);
-        if (!validation.ok) {
-          setLastCommand("image asset command invalid");
-          return;
-        }
+      applyCoordinatorDocument(
+        await asyncCoordinator.loadImage(file, {
+          ...getLoadContext(undefined, options?.groupId),
+          role: options?.role ?? "image",
+          attachToImageId: options?.attachToImageId,
+        }),
+      );
+    };
 
-        let nextDocument = applyCanvasCommands(
-          document,
-          [command],
-          getSpriteCommandApplyContext(spriteFrameEditSettings),
-        ).document;
-        if (options?.groupId) {
-          nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, object.id);
-        }
-        if (role === "alphaMap" && options?.attachToImageId) {
-          nextDocument = attachAlphaMapToImage(nextDocument, options.attachToImageId, object.id);
-        }
-        setDocument(nextDocument);
-        const applyResult = applyCanvasCommands(
-          document,
-          [command],
-          getSpriteCommandApplyContext(spriteFrameEditSettings),
-        );
-        recordAppliedCommands([command], applyResult.results);
-      } catch (caught) {
-        setLastCommand(
-          caught instanceof Error ? caught.message : "Image file could not be loaded.",
-        );
-      }
+    const getImageTargetId = (explicitTargetId?: string) => {
+      if (explicitTargetId) return explicitTargetId;
+      return getOwnerImageForSelection(document, getSelectedObject(document))?.id;
     };
 
     const loadSpriteSidecarFile: AppViewData["loadSpriteSidecarFile"] = async (file, options) => {
-      try {
-        const selected = getOwnerImageForSelection(document, getSelectedObject(document));
-        const target =
-          (options?.targetId ? document.objects[options.targetId] : selected) ?? undefined;
-        const targetImage =
-          target?.kind === "image" && (target.role === undefined || target.role === "image")
-            ? target
-            : undefined;
-
-        const { text } = await readCanvasTextFile(file);
-        const baseName = file.name.replace(/\.(spriteforge|sprite)?\.?toml$/i, "");
-        const sidecarId = makeUniqueObjectId(
-          `${(targetImage?.id ?? baseName) || "sprite-sidecar"}-sprite-sidecar`,
-          document,
-        );
-        const spec = parseSpriteSidecarToml(text, {
-          id: sidecarId,
-          name: `${baseName || targetImage?.name || file.name} sprite sidecar`,
-          targetId: targetImage?.id,
-          sourceName: file.name,
-        });
-        const object = targetImage
-          ? createSpriteSidecarObject(targetImage, spec)
-          : createUnattachedSpriteSidecarObject(spec, {
-              layerId: getDefaultImageLayerId(document),
-            });
-        const command: CanvasCommand = {
-          kind: "addSpriteSidecarObject",
-          object,
-          attach: Boolean(targetImage),
-        };
-        const validation = validateCanvasCommands(document, command);
-        setCommandValidation(validation);
-        if (!validation.ok) {
-          setLastCommand("sprite sidecar command invalid");
-          return;
-        }
-
-        const applyResult = applyCanvasCommands(
-          document,
-          [command],
-          getSpriteCommandApplyContext(spriteFrameEditSettings),
-        );
-        let nextDocument = applyResult.document;
-        if (options?.groupId) {
-          nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, object.id);
-        }
-        if (targetImage) {
-          nextDocument = attachSpriteSidecarToImage(nextDocument, targetImage.id, object.id);
-        }
-        setDocument(nextDocument);
-        recordAppliedCommands([command], applyResult.results);
-      } catch (caught) {
-        setLastCommand(
-          caught instanceof Error ? caught.message : "Sprite sidecar could not be loaded.",
-        );
-      }
+      applyCoordinatorDocument(
+        await asyncCoordinator.loadSpriteSidecar(
+          file,
+          getLoadContext(getImageTargetId(options?.targetId), options?.groupId),
+        ),
+      );
     };
 
     const loadGuideSidecarFile: AppViewData["loadGuideSidecarFile"] = async (file, options) => {
-      try {
-        const selected = getOwnerImageForSelection(document, getSelectedObject(document));
-        const target =
-          (options?.targetId ? document.objects[options.targetId] : selected) ?? undefined;
-        const targetImage =
-          target?.kind === "image" && (target.role === undefined || target.role === "image")
-            ? target
-            : undefined;
-
-        const { text } = await readCanvasTextFile(file);
-        const baseName = file.name.replace(/\.guide\.toml$/i, "").replace(/\.toml$/i, "");
-        const guideId = makeUniqueObjectId(
-          `${(targetImage?.id ?? baseName) || "guide-sidecar"}-guide-sidecar`,
-          document,
-        );
-        const guide = parseGuideSidecarToml(text);
-        const name = `${baseName || targetImage?.name || file.name}.guide.toml`;
-        const object = targetImage
-          ? createGuideSidecarObject(
-              targetImage,
-              { ...guide, id: guideId, rawToml: text },
-              { name },
-            )
-          : createUnattachedGuideSidecarObject(
-              { ...guide, id: guideId, rawToml: text },
-              {
-                layerId: getDefaultImageLayerId(document),
-                name,
-              },
-            );
-        const command: CanvasCommand = {
-          kind: "addGuideSidecarObject",
-          object,
-          attach: Boolean(targetImage),
-        };
-        const validation = validateCanvasCommands(document, command);
-        setCommandValidation(validation);
-        if (!validation.ok) {
-          setLastCommand("guide sidecar command invalid");
-          return;
-        }
-
-        const applyResult = applyCanvasCommands(
-          document,
-          [command],
-          getSpriteCommandApplyContext(spriteFrameEditSettings),
-        );
-        let nextDocument = applyResult.document;
-        if (options?.groupId) {
-          nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, object.id);
-        }
-        if (targetImage) {
-          nextDocument = attachGuideSidecarToImage(nextDocument, targetImage.id, object.id);
-        }
-        setDocument(nextDocument);
-        recordAppliedCommands([command], applyResult.results);
-      } catch (caught) {
-        setLastCommand(
-          caught instanceof Error ? caught.message : "Guide sidecar could not be loaded.",
-        );
-      }
+      applyCoordinatorDocument(
+        await asyncCoordinator.loadGuideSidecar(
+          file,
+          getLoadContext(getImageTargetId(options?.targetId), options?.groupId),
+        ),
+      );
     };
 
     const loadBlockoutSidecarFile: AppViewData["loadBlockoutSidecarFile"] = async (
       file,
       options,
     ) => {
-      try {
-        const selectedObject = getSelectedObject(document);
-        const targetObject =
-          (options?.targetObjectId ? document.objects[options.targetObjectId] : selectedObject) ??
-          undefined;
-        const { text } = await readCanvasTextFile(file);
-        const baseName = file.name.replace(/\.blockout\.toml$/i, "").replace(/\.toml$/i, "");
-        const blockoutId = makeUniqueObjectId(
-          `${(targetObject?.id ?? baseName) || "blockout-sidecar"}-blockout-sidecar`,
-          document,
-        );
-        const blockout = parseBlockoutSidecarToml(text);
-        const name = `${baseName || targetObject?.name || file.name}.blockout.toml`;
-        const object = targetObject
-          ? createBlockoutSidecarObject(
-              targetObject,
-              { ...blockout, id: blockoutId, rawToml: text },
-              { name },
-            )
-          : createUnattachedBlockoutSidecarObject(
-              { ...blockout, id: blockoutId, rawToml: text },
-              {
-                layerId: getDefaultImageLayerId(document),
-                name,
-              },
-            );
-        const command: CanvasCommand = {
-          kind: "addBlockoutSidecarObject",
-          object,
-          attach: Boolean(targetObject),
-        };
-        const validation = validateCanvasCommands(document, command);
-        setCommandValidation(validation);
-        if (!validation.ok) {
-          setLastCommand("blockout sidecar command invalid");
-          return;
-        }
-
-        const applyResult = applyCanvasCommands(
-          document,
-          [command],
-          getSpriteCommandApplyContext(spriteFrameEditSettings),
-        );
-        let nextDocument = applyResult.document;
-        if (options?.groupId) {
-          nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, object.id);
-        }
-        if (targetObject) {
-          nextDocument = applyCanvasCommands(
-            nextDocument,
-            [
-              {
-                kind: "attachBlockoutSidecar",
-                targetObjectId: targetObject.id,
-                blockoutId: object.id,
-              },
-            ],
-            getSpriteCommandApplyContext(spriteFrameEditSettings),
-          ).document;
-        }
-        setDocument(nextDocument);
-        recordAppliedCommands([command], applyResult.results);
-      } catch (caught) {
-        setLastCommand(
-          caught instanceof Error ? caught.message : "Blockout sidecar could not be loaded.",
-        );
-      }
+      applyCoordinatorDocument(
+        await asyncCoordinator.loadBlockoutSidecar(
+          file,
+          getLoadContext(
+            options?.targetObjectId ?? getSelectedObject(document)?.id,
+            options?.groupId,
+          ),
+        ),
+      );
     };
 
     const loadSketchOverlayFile: AppViewData["loadSketchOverlayFile"] = async (file, options) => {
-      try {
-        const selected = getOwnerImageForSelection(document, getSelectedObject(document));
-        const target =
-          (options?.targetId ? document.objects[options.targetId] : selected) ?? undefined;
-        const targetImage =
-          target?.kind === "image" && (target.role === undefined || target.role === "image")
-            ? target
-            : undefined;
-        const { text } = await readCanvasTextFile(file);
-        const baseName = file.name.replace(/\.sketch\.toml$/i, "").replace(/\.toml$/i, "");
-        const overlayId = makeUniqueObjectId(
-          `${(targetImage?.id ?? baseName) || "sketch-overlay"}-sketch`,
-          document,
-        );
-        const spec = parseSketchOverlayToml(text, {
-          id: overlayId,
-          name: baseName || "Sketch overlay",
-          targetId: targetImage?.id,
-        });
-        const object = createSketchOverlayObject(spec, {
-          id: overlayId,
-          name: spec.name,
-          target: targetImage,
-          layerId: getDefaultImageLayerId(document),
-        });
-        const nextObjects = {
-          ...document.objects,
-          [object.id]: object,
-        };
-        const nextLayers = document.layers.map((layer) =>
-          layer.id === object.layerId && !layer.objectIds.includes(object.id)
-            ? { ...layer, objectIds: [...layer.objectIds, object.id] }
-            : layer,
-        );
-        let nextDocument: CanvasDocument = {
-          ...document,
-          objects: nextObjects,
-          layers: nextLayers,
-          selectedObjectId: object.id,
-        };
-        if (options?.groupId) {
-          nextDocument = addObjectToLayerGroup(nextDocument, options.groupId, object.id);
-        }
-        if (targetImage) {
-          nextDocument = attachSketchOverlayToImage(nextDocument, targetImage.id, object.id);
-        }
-        setDocument(nextDocument);
-        setLastCommand(`loaded sketch overlay ${file.name}`);
-      } catch (caught) {
-        setLastCommand(
-          caught instanceof Error ? caught.message : "Sketch overlay could not be loaded.",
-        );
-      }
+      applyCoordinatorDocument(
+        await asyncCoordinator.loadSketchOverlay(
+          file,
+          getLoadContext(getImageTargetId(options?.targetId), options?.groupId),
+        ),
+      );
     };
 
     const setAidToggle = (key: keyof CanvasAidToggles, value: boolean) => {
@@ -889,182 +486,16 @@ export function App() {
       recordAppliedCommands(commands, applyResult.results);
     };
 
-    const generateExport = () => {
-      const latestCommands = commandLog[0]?.commands;
-      const bundle = createCanvasExportBundle(document, {
-        selectedObjectId: document.selectedObjectId,
-        commands: latestCommands,
-        summary: summarizeScene(document),
-        diagnostics: geometryDiagnostics,
-        viewport,
-      });
-      const validation = validateCanvasExportBundle(bundle, {
-        expectedCommands: latestCommands !== undefined,
-      });
-      setExportBundle(bundle);
-      setExportValidation(validation);
-      setRasterArtifact(undefined);
-      setRasterStatus("");
-      setSelectedExportPath("handoff.toml");
-      setExportStatus(
-        `${bundle.files.length} files generated in ${bundle.rootName}. Validation ${
-          validation.ok ? "passed" : "failed"
-        }.`,
-      );
-      setLastCommand("export generated");
-    };
-
-    const generateTsxExport = () => {
-      const latestCommands = commandLog[0]?.commands;
-      const bundle = createCanvasExportBundle(document, {
-        selectedObjectId: document.selectedObjectId,
-        commands: latestCommands,
-        summary: summarizeScene(document),
-        diagnostics: geometryDiagnostics,
-        viewport,
-        tsxOptions: { componentName: "GeneratedPage" },
-      });
-      const validation = validateCanvasExportBundle(bundle, {
-        expectedCommands: latestCommands !== undefined,
-      });
-      setExportBundle(bundle);
-      setExportValidation(validation);
-      setRasterArtifact(undefined);
-      setRasterStatus("");
-      setSelectedExportPath("generated-page.tsx");
-      setExportStatus(
-        `generated-page.tsx added to ${bundle.rootName}. Validation ${
-          validation.ok ? "passed" : "failed"
-        }.`,
-      );
-      setLastCommand("TSX page generated");
-    };
-
-    const setRasterScale = (scale: number) => {
-      setRasterScaleState(scale);
-      setRasterArtifact(undefined);
-      setRasterStatus("");
-    };
-
-    const setRasterBackground = (background: RasterExportBackground) => {
-      setRasterBackgroundState(background);
-      setRasterArtifact(undefined);
-      setRasterStatus("");
-    };
-
-    const generatePngExport = async () => {
-      try {
-        setRasterStatus("Generating PNG from render.svg...");
-        const rasterOptions: NormalizedRasterExportOptions = normalizeRasterExportOptions({
-          mimeType: "image/png",
-          scale: rasterScale,
-          background: rasterBackground,
-        });
-        const path = getRasterExportFileName("render", rasterOptions);
-        const blob = await lowerCanvasDocumentToRasterBlob(document, rasterOptions);
-        const artifact = {
-          path,
-          mimeType: rasterOptions.mimeType,
-          blob,
-          size: blob.size,
-        };
-        const latestCommands = commandLog[0]?.commands;
-        const bundle = createCanvasExportBundle(document, {
-          selectedObjectId: document.selectedObjectId,
-          commands: latestCommands,
-          summary: summarizeScene(document),
-          diagnostics: geometryDiagnostics,
-          viewport,
-          rasterArtifactPath: path,
-          rasterOptions,
-        });
-        const validation = validateCanvasExportBundle(bundle, {
-          expectedCommands: latestCommands !== undefined,
-        });
-
-        setRasterArtifact(artifact);
-        setExportBundle(bundle);
-        setExportValidation(validation);
-        setSelectedExportPath("handoff.toml");
-        setRasterStatus(`Generated ${path}.`);
-        setExportStatus(
-          `${bundle.files.length} text files generated with PNG lowering metadata. Validation ${
-            validation.ok ? "passed" : "failed"
-          }.`,
-        );
-        setLastCommand("PNG lowered from render.svg");
-      } catch (caught) {
-        const message = caught instanceof Error ? caught.message : "PNG export failed.";
-        setRasterStatus(message);
-        setLastCommand("PNG export failed");
-      }
-    };
-
-    const selectExportFile = (path: string) => {
-      setSelectedExportPath(path);
-      setExportStatus("");
-    };
-
-    const copySelectedExportFile = () => {
-      const selectedFile = getSelectedExportFile(exportBundle, selectedExportPath);
-      if (!selectedFile) return;
-
-      if (!navigator.clipboard?.writeText) {
-        setExportStatus("Clipboard API is unavailable in this browser.");
-        return;
-      }
-
-      navigator.clipboard
-        .writeText(selectedFile.text)
-        .then(() => setExportStatus(`Copied ${selectedFile.path}.`))
-        .catch(() => setExportStatus(`Could not copy ${selectedFile.path}.`));
-    };
-
-    const copyValidationReport = () => {
-      if (!exportValidation) return;
-
-      if (!navigator.clipboard?.writeText) {
-        setExportStatus("Clipboard API is unavailable in this browser.");
-        return;
-      }
-
-      navigator.clipboard
-        .writeText(formatCanvasExportValidationReport(exportValidation))
-        .then(() => setExportStatus("Copied validation report."))
-        .catch(() => setExportStatus("Could not copy validation report."));
-    };
-
-    const downloadSelectedExportFile = () => {
-      const selectedFile = getSelectedExportFile(exportBundle, selectedExportPath);
-      if (!selectedFile) return;
-
-      const blob = new Blob([selectedFile.text], {
-        type: selectedFile.mimeType,
-      });
-      const url = URL.createObjectURL(blob);
-      const anchor = window.document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${exportBundle?.rootName ?? document.id}-${selectedFile.path.replace(/\//g, "__")}`;
-      window.document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setExportStatus(`Downloaded ${selectedFile.path}.`);
-    };
-
-    const downloadRasterArtifact = () => {
-      if (!rasterArtifact) return;
-
-      const url = URL.createObjectURL(rasterArtifact.blob);
-      const anchor = window.document.createElement("a");
-      anchor.href = url;
-      anchor.download = rasterArtifact.path;
-      window.document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setRasterStatus(`Downloaded ${rasterArtifact.path}.`);
-    };
+    const generateExport = exportPresenter.generateExport;
+    const generateTsxExport = exportPresenter.generateTsxExport;
+    const setRasterScale = exportPresenter.setRasterScale;
+    const setRasterBackground = exportPresenter.setRasterBackground;
+    const generatePngExport = exportPresenter.generatePng;
+    const selectExportFile = exportPresenter.selectExportFile;
+    const copySelectedExportFile = exportPresenter.copySelected;
+    const copyValidationReport = exportPresenter.copyValidation;
+    const downloadSelectedExportFile = exportPresenter.downloadSelected;
+    const downloadRasterArtifact = exportPresenter.downloadRaster;
 
     return {
       activeMode,
@@ -1085,7 +516,7 @@ export function App() {
       geometryDiagnostics,
       exportArtifacts,
       exportCart,
-      exportPresets: CANVAS_EXPORT_PRESETS,
+      exportPresets: exportPresenter.exportPresets,
       checkpointNote,
       lastCheckout,
       exportBundle,
@@ -1130,7 +561,7 @@ export function App() {
       toggleExportArtifact: toggleCartArtifact,
       checkoutExportCart: runCartCheckout,
       saveCheckpoint,
-      setCheckpointNote: setCheckpointNoteValue,
+      setCheckpointNote: exportPresenter.setCheckpointNote,
       setRasterScale,
       setRasterBackground,
       generatePngExport,
@@ -1140,42 +571,7 @@ export function App() {
       downloadSelectedExportFile,
       downloadRasterArtifact,
     };
-  }, [
-    activeMode,
-    document,
-    viewport,
-    aidToggles,
-    lastCommand,
-    commandJson,
-    commandValidation,
-    commandLog,
-    lastApplyResults,
-    terminalLog,
-    terminalCollapsed,
-    terminalInput,
-    spriteFrameEditSettings,
-    lastToolResult,
-    geometryDiagnostics,
-    exportArtifacts,
-    exportCart,
-    checkpointNote,
-    lastCheckout,
-    exportBundle,
-    exportValidation,
-    selectedExportPath,
-    exportStatus,
-    rasterScale,
-    rasterBackground,
-    rasterArtifact,
-    rasterStatus,
-    commandLogCollapsed,
-    returnToModeSelection,
-    activeModeId,
-    selectedSpriteFrame?.frame.id,
-    editorSession.runTool,
-    editorSession.runCommands,
-    editorSession.replaceDocument,
-  ]);
+  })();
 
   if (activeModeId === undefined) {
     return <CanvasModeStart onSelectMode={loadMode} />;

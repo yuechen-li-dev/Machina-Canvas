@@ -354,13 +354,25 @@ button {
 
 .tree-object {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
   align-items: flex-start;
   min-height: 34px;
   padding: 7px 8px;
   text-align: left;
   border-radius: 10px;
+}
+
+.tree-object-selection {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
 }
 
 .tree-object-main {

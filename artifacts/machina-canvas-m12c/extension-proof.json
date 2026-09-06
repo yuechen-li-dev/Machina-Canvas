@@ -1,0 +1,19 @@
+{
+  "task": "Add one small Guide inspector affordance that toggles an existing guide display option.",
+  "result": "passed",
+  "affordance": "Guide labels",
+  "command": "setGuideSidecarShowLabels",
+  "centralInspectorEdited": false,
+  "centralShellEdited": false,
+  "genericCapabilityBranchAdded": false,
+  "touchedFiles": [
+    "src/modules/guides/ui/GuideInspectorContribution.tsx",
+    "src/modules/guides/command.ts",
+    "src/modules/commandContributions.ts",
+    "src/modules/definitions.ts",
+    "src/sceneCommands.ts",
+    "src/app/editor/editorShared.tsx",
+    "test/modules/guides/guide-inspector.test.tsx"
+  ],
+  "validation": "60 files and 509 tests passed in the fresh run; build passed"
+}

@@ -1,0 +1,13 @@
+{
+  "service": "src/app/browser/BrowserEditorServices.ts",
+  "interfaces": ["BrowserFileService", "BrowserExportService"],
+  "owns": [
+    "File.text",
+    "image File normalization",
+    "navigator.clipboard",
+    "Blob download",
+    "URL.createObjectURL",
+    "download anchor lifecycle"
+  ],
+  "compatibilityFacade": "src/app/files/browserFileLoading.ts"
+}

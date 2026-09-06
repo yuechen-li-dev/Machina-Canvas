@@ -4,7 +4,7 @@ export const stickerInspectorContribution: CanvasInspectorContribution = {
   id: "stickers.label",
   order: 100,
   supports: (object) => object.kind === "sticker",
-  render({ object, runCommand }) {
+  renderSummary({ object, runCommand }) {
     if (object.kind !== "sticker") return null;
     return (
       <label className="field-row">

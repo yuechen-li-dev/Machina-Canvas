@@ -215,20 +215,24 @@ function LayerTreeRow({
 
   return (
     <>
-      <button
+      <div
         className={`tree-object ${item.selected ? "is-selected" : ""} ${
           item.kind === "attachment" ? "is-attachment" : ""
         } ${item.warning ? "has-warning" : ""}`}
-        title={item.title}
-        type="button"
-        onClick={() => item.objectId && onSelectObject(item.objectId)}
       >
-        <span className="kind-pill">{item.badge}</span>
-        <span className="tree-object-main">
-          <strong>{item.title}</strong>
-          {item.subtitle ? <small>{item.subtitle}</small> : null}
-          {item.warning ? <em>{item.warning}</em> : null}
-        </span>
+        <button
+          className={`tree-object-selection ${item.selected ? "is-selected" : ""}`}
+          onClick={() => item.objectId && onSelectObject(item.objectId)}
+          title={item.title}
+          type="button"
+        >
+          <span className="kind-pill">{item.badge}</span>
+          <span className="tree-object-main">
+            <strong>{item.title}</strong>
+            {item.subtitle ? <small>{item.subtitle}</small> : null}
+            {item.warning ? <em>{item.warning}</em> : null}
+          </span>
+        </button>
         {item.kind === "attachment" &&
         item.objectId &&
         item.visible !== undefined &&
@@ -244,7 +248,7 @@ function LayerTreeRow({
             {item.visible ? "Visible" : "Hidden"}
           </button>
         ) : null}
-      </button>
+      </div>
       {item.children?.length ? (
         <div className="tree-children">
           {item.children.map((child) => (

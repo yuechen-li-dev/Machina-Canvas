@@ -1,0 +1,14 @@
+{
+  "file": "src/app/inspector/Inspector.tsx",
+  "lines": 565,
+  "bytes": 22639,
+  "ownedGuideBody": false,
+  "ownedBlockoutBody": false,
+  "ownedMechanicalBody": false,
+  "remainingResponsibilities": [
+    "selection summary",
+    "generic geometry and viewport",
+    "global tools and image asset host",
+    "metadata, export, and diagnostics composition"
+  ]
+}

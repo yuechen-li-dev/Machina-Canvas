@@ -1,0 +1,10 @@
+{
+  "task": "Loading a guide sidecar reports success but does not select the newly attached guide.",
+  "result": "reproduced in the former shell path and fixed by extraction",
+  "fix": "src/modules/guides/loadActions.ts returns the attached document with selectedObjectId set to the new guide id",
+  "regression": "test/modules/guides/guide-sidecar-load-selection.test.ts",
+  "collisionCase": "image-guide-sidecar-2",
+  "sessionQualified": true,
+  "centralInspectorEdited": false,
+  "centralShellEditedByFreshAgent": false
+}

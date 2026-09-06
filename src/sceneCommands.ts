@@ -1,6 +1,9 @@
 import { createBlockoutSidecarObject } from "./blockoutSidecar";
-import { getCanvasModuleCommandDefinition } from "./modules/commandContributions";
-import type { StickerCommand } from "./modules/stickers/command";
+import {
+  type CanvasModuleCommand,
+  getCanvasModuleCommandDefinition,
+  isCanvasModuleCommand,
+} from "./modules/commandContributions";
 import { resolveCanvasFrame } from "./canvasFrames";
 import { addCanvasObjectToLayerGroup, createCanvasLayerGroup } from "./layerTree";
 import { selectSpriteFrameInSpec, updateSpriteFrameRectInSpec } from "./spriteSidecar";
@@ -263,7 +266,7 @@ export type CanvasCommand =
       constrainToGuideRegion?: boolean;
       restrictToRegion?: boolean;
     }
-  | StickerCommand;
+  | CanvasModuleCommand;
 
 export type CanvasCommandValidationContext = {
   referenceGrid?: Partial<ReferenceGridConfig>;
@@ -2319,9 +2322,9 @@ export function applyCanvasCommand(
   command: CanvasCommand,
   context?: CanvasCommandApplyContext,
 ): CanvasCommandApplyResult {
-  if (command.kind === "addSticker" || command.kind === "renameSticker") {
+  if (isCanvasModuleCommand(command)) {
     const moduleDefinition = getCanvasModuleCommandDefinition(command.kind);
-    if (!moduleDefinition?.is(command)) {
+    if (!moduleDefinition) {
       throw new Error(`Missing command contribution for "${command.kind}".`);
     }
     return moduleDefinition.apply(document, command, context) as CanvasCommandApplyResult;

@@ -7,7 +7,6 @@ import { ExportCartPanel } from "../src/ExportCartPanel";
 import {
   CANVAS_EXPORT_PRESETS,
   applyExportPreset,
-  checkoutExportCart,
   collectCanvasExportArtifacts,
   createCanvasCheckpoint,
   createExportCart,
@@ -358,7 +357,7 @@ describe("MachinaCanvas export cart", () => {
         },
       },
     ] as const;
-    const result = await checkoutExportCart({
+    const result = await materializeExportCart({
       artifacts,
       cart: createExportCart(artifacts),
     });

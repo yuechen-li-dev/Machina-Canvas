@@ -162,7 +162,7 @@ export const CANVAS_EXPORT_PRESETS: readonly CanvasExportPreset[] = [
   },
 ] as const;
 
-type CheckoutEntry = {
+export type CanvasExportCheckoutEntry = {
   artifact: CanvasExportArtifact;
   filename: string;
   mimeType: string;
@@ -719,7 +719,7 @@ export async function materializeExportCart(input: {
 }): Promise<
   | {
       readonly kind: "ok";
-      readonly entries: readonly CheckoutEntry[];
+      readonly entries: readonly CanvasExportCheckoutEntry[];
       readonly manifest?: CanvasExportManifest;
     }
   | {
@@ -731,7 +731,7 @@ export async function materializeExportCart(input: {
   const selected = input.artifacts.filter((artifact) =>
     input.cart.selectedArtifactIds.includes(artifact.id),
   );
-  const entries: CheckoutEntry[] = [];
+  const entries: CanvasExportCheckoutEntry[] = [];
 
   for (const artifact of selected) {
     try {
@@ -769,63 +769,4 @@ export async function materializeExportCart(input: {
   }
 
   return { kind: "ok", entries, manifest };
-}
-
-function downloadEntry(entry: CheckoutEntry) {
-  if (typeof window === "undefined" || typeof globalThis.document === "undefined") return;
-  const blob =
-    entry.payload instanceof Blob
-      ? entry.payload
-      : new Blob([entry.payload], { type: entry.mimeType });
-  const url = URL.createObjectURL(blob);
-  const anchor = globalThis.document.createElement("a");
-  anchor.href = url;
-  anchor.download = entry.filename.replace(/\//g, "__");
-  globalThis.document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
-}
-
-async function copyTextCheckout(entries: readonly CheckoutEntry[]): Promise<void> {
-  if (!navigator.clipboard?.writeText) {
-    throw new Error("Clipboard API is unavailable in this browser.");
-  }
-  const textEntries = entries.filter((entry) => typeof entry.payload === "string");
-  const combined = textEntries
-    .map((entry) => `# ${entry.filename}\n\n${entry.payload}`)
-    .join("\n\n");
-  await navigator.clipboard.writeText(combined);
-}
-
-export async function checkoutExportCart(input: {
-  readonly artifacts: readonly CanvasExportArtifact[];
-  readonly cart: CanvasExportCart;
-  readonly activeModeId?: string;
-  readonly manifestFilename?: string;
-}): Promise<CanvasExportCheckoutResult> {
-  const materialized = await materializeExportCart(input);
-  if (materialized.kind === "err") return materialized;
-
-  try {
-    if (input.cart.checkoutMode === "copyText") {
-      await copyTextCheckout(materialized.entries);
-    } else {
-      for (const entry of materialized.entries) {
-        downloadEntry(entry);
-      }
-    }
-  } catch (error) {
-    return {
-      kind: "err",
-      message: error instanceof Error ? error.message : "Checkout failed.",
-    };
-  }
-
-  return {
-    kind: "ok",
-    artifactCount: materialized.entries.length,
-    filenames: materialized.entries.map((entry) => entry.filename),
-    manifest: materialized.manifest,
-  };
 }

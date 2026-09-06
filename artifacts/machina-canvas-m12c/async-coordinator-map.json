@@ -1,0 +1,17 @@
+{
+  "coordinator": "src/app/async/CanvasEditorAsyncCoordinator.ts",
+  "resultType": "EditorAsyncResult<T>",
+  "reactDependencies": false,
+  "operations": {
+    "image": "src/modules/images/loadActions.ts",
+    "sketch": "src/modules/images/loadActions.ts",
+    "sprite": "src/modules/sprites/loadActions.ts",
+    "guide": "src/modules/guides/loadActions.ts",
+    "blockout": "src/modules/guides/loadActions.ts",
+    "mechanical": "src/modules/mechanical/loadActions.ts",
+    "export": "src/canvasExport.ts",
+    "checkout": "src/exportCart.ts -> BrowserExportService",
+    "checkpoint": "src/exportCart.ts -> BrowserExportService",
+    "raster": "src/rasterExport.ts"
+  }
+}

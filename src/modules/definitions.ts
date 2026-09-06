@@ -67,7 +67,12 @@ export const spriteModule: CanvasModule = {
 
 export const guideModule: CanvasModule = {
   id: "guides",
-  commands: ["addGuideSidecarObject", "addBlockoutSidecarObject", "alignObjectByGuideMarks"],
+  commands: [
+    "addGuideSidecarObject",
+    "addBlockoutSidecarObject",
+    "alignObjectByGuideMarks",
+    "setGuideSidecarShowLabels",
+  ],
   inspectors: ["guide", "blockout", "datum-snap"],
   renderers: ["guideSidecar", "blockoutSidecar"],
 };

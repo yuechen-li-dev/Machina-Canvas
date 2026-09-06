@@ -6,15 +6,17 @@ MachinaCanvas treats React as a host for an editor session, not as the owner of 
 
 `CanvasEditorSession` in `src/core/editor/CanvasEditorSession.ts` is framework-free. It owns mode changes, document mutation through commands, selection, registered tool execution, export-cart selection, and bundle creation. It exposes `getSnapshot()` and `subscribe()` so React, tests, scripts, or another host can drive the same contract.
 
-`src/app/shell/CanvasEditorShell.tsx` is the React composition root. It renders session-derived state and retains transient browser concerns such as open accordions, text-entry buffers, clipboard/download status, and pointer interaction state. Semantic actions delegate to the session or an existing typed domain command.
+`src/app/shell/CanvasEditorShell.tsx` is the React composition root. It renders session-derived state and retains only React transients such as text-entry buffers and collapsed-panel state. Semantic actions delegate to the session or an existing typed domain command. Async invocations delegate to `CanvasEditorAsyncCoordinator`; export UI state is isolated in the focused export presenter.
 
-Browser `File` decoding is isolated in `src/app/files/browserFileLoading.ts`. Parsed image/text values cross into domain code; `FileReader`, object URLs, input resets, and drag/drop details do not belong in core or capability models.
+Browser file decoding, clipboard access, downloads, and object URLs are isolated in `src/app/browser/BrowserEditorServices.ts`. The compatibility file-loading facade delegates there. Browser values cross the boundary as plain typed text, image assets, or materialized export entries; browser APIs do not belong in core, capability models, the session, or the shell.
+
+`src/app/async/CanvasEditorAsyncCoordinator.ts` is a bounded, framework-free application coordinator. It reads through injected browser services, dispatches to module-owned load actions, synchronizes accepted documents with `CanvasEditorSession`, and returns an explicit `EditorAsyncResult`. It is not a task scheduler and owns no React state.
 
 ## UI contribution points
 
 Object renderers and canvas overlays register in `src/app/canvas/objectContributions.tsx`. Every contribution has a stable non-empty `id`, numeric `order`, a `supports` predicate, and a render function. Registries reject duplicate IDs and sort by `(order, id)`.
 
-Inspector contributions register in `src/app/inspectorContributions.tsx` with the same stable-ID, ordering, and predicate law. A module owns its renderer, overlay, inspector, command, tool, and export implementation; the app-level registry only composes them.
+Inspector contributions register in `src/app/inspectorContributions.tsx` with the same stable-ID, ordering, and predicate law. Contributions may provide a selected-object summary and/or whole inspector panels. Guide, blockout, sprite, mechanical, web UI, and Sticker inspector bodies are module-owned; the app-level registry only composes them.
 
 Capability UI locations:
 
