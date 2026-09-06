@@ -65,6 +65,12 @@ export const spriteModule: CanvasModule = {
   renderers: ["spriteSidecar"],
 };
 
+export const spriteCardsModule: CanvasModule = {
+  id: "spriteCards",
+  inspectors: ["sprite-edge-program-cards"],
+  diagnostics: ["span-allocation"],
+};
+
 export const guideModule: CanvasModule = {
   id: "guides",
   commands: [
