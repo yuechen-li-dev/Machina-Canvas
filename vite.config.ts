@@ -9,6 +9,14 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: "machinalayout/comptime/node",
+        replacement: resolve(machinaLayoutRoot, "src/comptime/node/index.ts"),
+      },
+      {
+        find: "machinalayout/comptime",
+        replacement: resolve(machinaLayoutRoot, "src/comptime/index.ts"),
+      },
+      {
         find: "machinalayout/match",
         replacement: resolve(machinaLayoutRoot, "src/match/index.ts"),
       },

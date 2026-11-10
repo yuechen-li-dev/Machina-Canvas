@@ -1,8 +1,10 @@
-import { deflateSync } from "node:zlib";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deflateSync } from "node:zlib";
+import { CT } from "machinalayout/comptime";
+import { nodeArtifactFs } from "machinalayout/comptime/node";
 import { serializeCanvasRenderSvg } from "../src/canvasExport";
 import { createCanvasUnitSystem } from "../src/canvasUnits";
 import {
@@ -329,28 +331,60 @@ function rasterizePreview(): void {
   }
 }
 
-export function createGuideOverlayFixtureArtifacts(): CanvasDocument {
-  mkdirSync(artifactsDir, { recursive: true });
-  writeReferencePng(GUIDE_OVERLAY_FIXTURE_PATHS.reference);
-  const document = createGuideOverlayFixtureDocument();
+function guideOf(document: CanvasDocument) {
   const guide = document.objects[GUIDE_OVERLAY_FIXTURE_IDS.guideId];
   if (guide?.kind !== "guideSidecar") throw new Error("Guide fixture sidecar is missing.");
-  const renderSvg = serializeCanvasRenderSvg(document);
+  return guide.guide;
+}
 
-  writeFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.guideToml, stringifyGuideSidecarToml(guide.guide));
-  writeFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.scene, `${JSON.stringify(document, null, 2)}\n`);
-  writeFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.svg, renderSvg);
-  writeFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.report, createReport(document, renderSvg));
-  writeFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.reviewHtml, createReviewHtml(document, renderSvg));
+/**
+ * The fixture's text artifacts: pure functions of the fixture document, so
+ * CT.write produces them and CT.check verifies them without touching disk.
+ * The PNGs and the optional Inkscape rasterization stay imperative below:
+ * binary output and external tools are outside the comptime registry by design.
+ */
+export const GUIDE_OVERLAY_TEXT_ARTIFACTS = CT.artifacts({
+  outDir: "artifacts",
+  artifacts: [
+    CT.text("guide-overlay-fixture.guide.toml", () =>
+      stringifyGuideSidecarToml(guideOf(createGuideOverlayFixtureDocument())),
+    ),
+    CT.json("guide-overlay-fixture.mcanvas.json", () => createGuideOverlayFixtureDocument()),
+    CT.text("guide-overlay-fixture.render.svg", () =>
+      serializeCanvasRenderSvg(createGuideOverlayFixtureDocument()),
+    ),
+    CT.text("guide-overlay-fixture-report.md", () => {
+      const document = createGuideOverlayFixtureDocument();
+      return createReport(document, serializeCanvasRenderSvg(document));
+    }),
+    CT.text("guide-overlay-review.html", () => {
+      const document = createGuideOverlayFixtureDocument();
+      return createReviewHtml(document, serializeCanvasRenderSvg(document));
+    }),
+  ],
+});
+
+export const GUIDE_OVERLAY_ARTIFACT_ROOT = repoRoot;
+
+export async function createGuideOverlayFixtureArtifacts(): Promise<CanvasDocument> {
+  mkdirSync(artifactsDir, { recursive: true });
+  writeReferencePng(GUIDE_OVERLAY_FIXTURE_PATHS.reference);
+  const report = await CT.write(GUIDE_OVERLAY_TEXT_ARTIFACTS, {
+    fs: nodeArtifactFs(),
+    root: repoRoot,
+  });
+  if (report.diagnostics.length > 0) {
+    throw new Error(CT.formatDiagnostics(report.diagnostics));
+  }
   rasterizePreview();
   if (!existsSync(GUIDE_OVERLAY_FIXTURE_PATHS.preview)) {
     writeReferencePng(GUIDE_OVERLAY_FIXTURE_PATHS.preview);
   }
-  return document;
+  return createGuideOverlayFixtureDocument();
 }
 
 if (process.env.VITEST !== "true") {
-  createGuideOverlayFixtureArtifacts();
+  await createGuideOverlayFixtureArtifacts();
   console.log(`Wrote ${GUIDE_OVERLAY_FIXTURE_PATHS.scene}`);
   console.log(`Wrote ${GUIDE_OVERLAY_FIXTURE_PATHS.svg}`);
   console.log(`Wrote ${GUIDE_OVERLAY_FIXTURE_PATHS.preview}`);

@@ -1,11 +1,14 @@
 import { readFileSync } from "node:fs";
+import { CT } from "machinalayout/comptime";
+import { nodeArtifactFs } from "machinalayout/comptime/node";
 import { describe, expect, it } from "vitest";
 import {
-  createGuideOverlayFixtureArtifacts,
   createGuideOverlayFixtureDocument,
+  GUIDE_OVERLAY_ARTIFACT_ROOT,
   GUIDE_OVERLAY_FIXTURE_IDS,
   GUIDE_OVERLAY_FIXTURE_PATHS,
   GUIDE_OVERLAY_FIXTURE_TOML,
+  GUIDE_OVERLAY_TEXT_ARTIFACTS,
 } from "../scripts/create-guide-overlay-fixture";
 import { serializeCanvasRenderSvg } from "../src/canvasExport";
 import { parseGuideSidecarToml } from "../src/guideSidecar";
@@ -110,8 +113,12 @@ describe("MachinaCanvas M40d guide overlay verification", () => {
     expect(svg).toContain('class="canvas-guide-dimension" x1="80" y1="80" x2="600" y2="80"');
   });
 
-  it("writes fixture artifacts and report with counts, attachment, and export status", () => {
-    createGuideOverlayFixtureArtifacts();
+  it("checked-in fixture artifacts match their generators (read-only)", async () => {
+    const diagnostics = await CT.check(GUIDE_OVERLAY_TEXT_ARTIFACTS, {
+      fs: nodeArtifactFs(),
+      root: GUIDE_OVERLAY_ARTIFACT_ROOT,
+    });
+    expect(CT.formatDiagnostics(diagnostics)).toBe("No artifact diagnostics.");
 
     const scene = readFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.scene, "utf8");
     const report = readFileSync(GUIDE_OVERLAY_FIXTURE_PATHS.report, "utf8");
