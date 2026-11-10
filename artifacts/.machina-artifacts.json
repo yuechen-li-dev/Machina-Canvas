@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifacts": {
+    "guide-overlay-fixture.guide.toml": {
+      "hash": "cyrb53:1f5afc7d99f77d"
+    },
+    "guide-overlay-fixture.mcanvas.json": {
+      "hash": "cyrb53:8297d794ccc9b"
+    },
+    "guide-overlay-fixture.render.svg": {
+      "hash": "cyrb53:6d679c6ff1ae"
+    },
+    "guide-overlay-fixture-report.md": {
+      "hash": "cyrb53:13bac5efdff015"
+    },
+    "guide-overlay-review.html": {
+      "hash": "cyrb53:e45a4e27a1c40"
+    }
+  }
+}
